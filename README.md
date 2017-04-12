@@ -1,3 +1,5 @@
+[![Gem Version](https://badge.fury.io/rb/capistrano-net_storage.svg)](https://badge.fury.io/rb/capistrano-net_storage)
+[![Build Status](https://travis-ci.org/DeNADev/capistrano-net_storage.svg?branch=master)](https://travis-ci.org/DeNADev/capistrano-net_storage)
 # Capistrano::NetStorage
 
 **Capistrano::NetStorage** is a [Capistrano](http://capistranorb.com/) plugin to deploy application
@@ -81,7 +83,7 @@ require 'capistrano/deploy'
 
 # Includes tasks from other gems included in your Gemfile
 require 'capistrano/net_storage'
-# Load transport plugin
+# Load transport plugin for Capistrano::NetStorage
 # require 'capistrano/net_storage/s3'
 ```
 
