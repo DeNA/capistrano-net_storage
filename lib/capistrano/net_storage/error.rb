@@ -1,5 +1,6 @@
 module Capistrano
   module NetStorage
-    VERSION = '0.2.0'
+    class Error < StandardError
+    end
   end
 end

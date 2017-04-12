@@ -1,7 +1,2 @@
-require "capistrano/net_storage/version"
-
-module Capistrano
-  module NetStorage
-    # Your code goes here...
-  end
-end
+require 'capistrano/net_storage/all'
+load File.expand_path('../tasks/net_storage.rake', __FILE__)
