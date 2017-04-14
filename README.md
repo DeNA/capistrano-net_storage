@@ -24,11 +24,6 @@ This library goes following procedures as _capistrano tasks_:
 3. Download the archive from _remote storage_ on application servers.
   * This task is executed in parallel way.
 
-NOTE:
-
-* You need to prepare a _transport class_ to execute upload/download operation suitable for
-_remote storage_. It should inherit `Capistrano::NetStorage::Transport::Base` class.
-
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -68,7 +63,10 @@ Set Capistrano variables by `set name, value`.
 
 Here are available plugins list which serves as `:net_storage_transport`:
 
-- [Capistrano::NetStorage::S3::Transport](https://github.com/DeNADev/capistrano-net_storage-s3)
+- [Capistrano::NetStorage::S3::Transport](https://github.com/DeNADev/capistrano-net_storage-s3) for [Amazon S3](https://aws.amazon.com/s3/)
+
+If you wish a plugin for other types of _remote storage_, you can develop it. It should inherit
+`Capistrano::NetStorage::Transport::Base` class.
 
 ## Usage
 
