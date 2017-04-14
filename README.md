@@ -113,3 +113,6 @@ Available as open source under the terms of the [MIT License](http://opensource.
 
 Copyright (c) 2017 DeNA Co., Ltd., IKEDA Kiyoshi
 
+## Special Thanks
+
+The previous version of this program was originally developed by @bobpp.
