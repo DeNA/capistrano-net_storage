@@ -6,14 +6,14 @@ class Capistrano::NetStorage::Archiver::TarGzip < Capistrano::NetStorage::Archiv
   include Capistrano::NetStorage::Utils
 
   def check
-    on :local do
+    run_locally do
       execute :which, 'tar'
     end
   end
 
   def archive
     c = config
-    on :local do
+    run_locally do
       within c.local_release_path do
         execute :tar, 'czf', c.local_archive_path, '.'
       end
