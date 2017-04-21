@@ -7,7 +7,7 @@ module Capistrano
       include Capistrano::NetStorage::Utils
 
       def check
-        on :local do
+        run_locally do
           execute :which, 'bundle'
         end
       end
@@ -15,7 +15,7 @@ module Capistrano
       # Do bundle install locally. Installed gems are to be included to the release.
       def install
         c = config
-        on :local do
+        run_locally do
           local_release_bundle_path = c.local_release_path.join('vendor', 'bundle')
           execute :mkdir, '-p', local_release_bundle_path
           execute :mkdir, '-p', "#{c.local_release_path}/.bundle"

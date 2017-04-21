@@ -11,7 +11,7 @@ module Capistrano
       # @see Capistrano::NetStorage::Config#local_releases_path
       def cleanup_local_release
         c = config
-        on :local do
+        run_locally do
           releases = capture(:ls, '-xtr', c.local_releases_path).split
           # Contains archive files and extracted directories
           if releases.count > fetch(:keep_releases) * 2

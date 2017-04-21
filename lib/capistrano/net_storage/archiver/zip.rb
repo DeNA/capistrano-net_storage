@@ -6,14 +6,14 @@ class Capistrano::NetStorage::Archiver::Zip < Capistrano::NetStorage::Archiver::
   include Capistrano::NetStorage::Utils
 
   def check
-    on :local do
+    run_locally do
       execute :which, 'zip'
     end
   end
 
   def archive
     c = config
-    on :local do
+    run_locally do
       within c.local_release_path do
         execute :zip, c.local_archive_path, '-r', '.'
       end

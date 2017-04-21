@@ -94,7 +94,7 @@ namespace :net_storage do
         config.local_releases_path,
       ]
       dirs << config.local_bundle_path unless config.skip_bundle?
-      on :local do
+      run_locally do
         dirs.each { |dir| execute :mkdir, '-p', dir }
       end
     end

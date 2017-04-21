@@ -3,14 +3,14 @@ require 'capistrano/net_storage/scm/base'
 # Internal SCM class for Git repository
 class Capistrano::NetStorage::SCM::Git < Capistrano::NetStorage::SCM::Base
   def check
-    on :local do
+    run_locally do
       execute :git, 'ls-remote', repo_url, 'HEAD'
     end
   end
 
   def clone
     c = config
-    on :local do
+    run_locally do
       if File.exist?("#{c.local_mirror_path}/HEAD")
         info t(:mirror_exists, at: c.local_mirror_path)
       else
@@ -21,7 +21,7 @@ class Capistrano::NetStorage::SCM::Git < Capistrano::NetStorage::SCM::Base
 
   def update
     c = config
-    on :local do
+    run_locally do
       within c.local_mirror_path do
         execute :git, :remote, :update
       end
@@ -31,7 +31,7 @@ class Capistrano::NetStorage::SCM::Git < Capistrano::NetStorage::SCM::Base
   def set_current_revision
     return if fetch(:current_revision)
     c = config
-    on :local do
+    run_locally do
       within c.local_mirror_path do
         set :current_revision, capture(:git, "rev-parse #{fetch(:branch)}")
       end
@@ -40,7 +40,7 @@ class Capistrano::NetStorage::SCM::Git < Capistrano::NetStorage::SCM::Base
 
   def prepare_archive
     c = config
-    on :local do
+    run_locally do
       execute :mkdir, '-p', c.local_release_path
 
       within c.local_mirror_path do
