@@ -33,7 +33,7 @@ class Capistrano::NetStorage::SCM::Git < Capistrano::NetStorage::SCM::Base
     c = config
     run_locally do
       within c.local_mirror_path do
-        set :current_revision, capture(:git, "rev-parse #{fetch(:branch)}")
+        set :current_revision, capture(:git, "rev-list --max-count=1 #{fetch(:branch)}")
       end
     end
   end
