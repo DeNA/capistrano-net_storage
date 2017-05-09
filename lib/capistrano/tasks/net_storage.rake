@@ -55,14 +55,17 @@ namespace :net_storage do
     Capistrano::NetStorage.bundler.install unless config.skip_bundle?
   end
 
+  desc 'Create archive to release on local'
   task create_archive: :'net_storage:prepare_archive' do
     Capistrano::NetStorage.archiver.archive
   end
 
+  desc 'Upload archive onto remote storage'
   task upload_archive: :'net_storage:create_archive' do
     Capistrano::NetStorage.transport.upload
   end
 
+  desc 'Deploy via remote storage using uploaded archive'
   task pull_deploy: :'net_storage:transport:find_uploaded' do
     Capistrano::NetStorage.transport.download
     Capistrano::NetStorage.archiver.extract
