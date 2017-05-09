@@ -49,6 +49,14 @@ namespace :net_storage do
   end
   after 'deploy:cleanup', 'net_storage:cleanup_local_release'
 
+  desc 'Clean up old archives on remote storage'
+  task :cleanup_remote_release do
+    transport = Capistrano::NetStorage.transport
+    next unless transport.respond_to?(:cleanup)
+    transport.cleanup
+  end
+  after 'net_storage:cleanup_local_release', 'net_storage:cleanup_remote_release'
+
   task prepare_archive: %i(net_storage:scm:update net_storage:check:bundler) do
     config = Capistrano::NetStorage.config
     Capistrano::NetStorage.scm.prepare_archive
