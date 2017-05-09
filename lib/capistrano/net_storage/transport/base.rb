@@ -28,6 +28,12 @@ module Capistrano
         def download
           raise NotImplementedError
         end
+
+        # Clean up old archives on remote storage
+        # @abstract
+        # def cleanup
+        #   raise NotImplementedError
+        # end
       end
     end
   end
