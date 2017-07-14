@@ -46,7 +46,7 @@ Set Capistrano variables by `set name, value`.
 
  Name | Default | Description
 ------|---------|------------
- `:scm`  | `nil` | Set `:net_storage`
+ `:scm`  | `nil` | Set `:net_storage` for capistrano before v3.7
  `:branch` | `master` | Target branch of SCM to release
  `:keep_releases` | `5` | Numbers to keep released versions
  `:net_storage_transport` | `nil` | Transport class for _remote storage_
@@ -80,7 +80,13 @@ require 'capistrano/setup'
 require 'capistrano/deploy'
 
 # Includes tasks from other gems included in your Gemfile
-require 'capistrano/net_storage'
+if Gem::Version.new(Capistrano::VERSION) < Gem::Version.new('3.7.0')
+  require 'capistrano/net_storage'
+else
+  require "capistrano/net_storage/plugin"
+  install_plugin Capistrano::NetStorage::Plugin
+end
+
 # Load transport plugin for Capistrano::NetStorage
 # require 'capistrano/net_storage/s3'
 ```
@@ -88,7 +94,9 @@ require 'capistrano/net_storage'
 Edit your `config/deploy.rb`:
 
 ```ruby
-set :scm, :net_storage
+if Gem::Version.new(Capistrano::VERSION) < Gem::Version.new('3.7.0')
+  set :scm, :net_storage
+end
 set :net_storage_transport, Your::TransportPluginModule
 # set :net_storage_transport, Capistrano::NetStorage::S3::Transport # w/ capistrano-net_storage-s3
 # set :net_storage_config_files, [your_config_files]
@@ -100,12 +108,6 @@ set :net_storage_transport, Your::TransportPluginModule
 
 You can see typical usage of this library by
 [capistrano-net_storage_demo](https://github.com/DeNADev/capistrano-net_storage_demo).
-
-## TODO
-
-* Support
-[Capistrano SCM plugin system](http://capistranorb.com/documentation/advanced-features/custom-scm/)
-introduced in Capistrano v3.7
 
 ## License
 
