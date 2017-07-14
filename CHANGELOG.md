@@ -1,3 +1,9 @@
+## 0.3.0 (2017/7/14)
+
+Improve:
+
+- Support capistrano's SCM plugin system (#4) @progrhyme
+
 ## 0.2.3 (2017/5/10)
 
 Minor Modify:
