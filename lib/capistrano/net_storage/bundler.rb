@@ -41,8 +41,8 @@ module Capistrano
       # Create +.bundle/config+ at release path on remote servers
       def sync_config
         c = config
-
-        on c.servers, in: :groups, limit: c.max_parallels do
+        hosts = ::Capistrano::Configuration.env.filter(c.servers)
+        on hosts, in: :groups, limit: c.max_parallels do
           within release_path do
             execute :mkdir, '-p', '.bundle'
           end

@@ -22,7 +22,8 @@ class Capistrano::NetStorage::Archiver::TarGzip < Capistrano::NetStorage::Archiv
 
   def extract
     c = config
-    on c.servers, in: :groups, limit: c.max_parallels do
+    hosts = ::Capistrano::Configuration.env.filter(c.servers)
+    on hosts, in: :groups, limit: c.max_parallels do
       execute :mkdir, '-p', release_path
       within release_path do
         execute :tar, 'xzf', c.archive_path

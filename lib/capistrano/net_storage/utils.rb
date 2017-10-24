@@ -18,6 +18,7 @@ module Capistrano
       # You can provide either of +dest_dir+ or +dest_path+, or files are copied to same pathes
       def upload_files(files, dest_dir: nil, dest_path: nil)
         c = config
+        hosts = ::Capistrano::Configuration.env.filter(c.servers)
         files.each do |src|
           basename = File.basename(src)
           dest = dest_path || begin
@@ -26,14 +27,14 @@ module Capistrano
           end
 
           if c.upload_files_by_rsync?
-            Parallel.each(c.servers, in_threads: c.max_parallels) do |host|
+            Parallel.each(hosts, in_threads: c.max_parallels) do |host|
               ssh = build_ssh_command(host)
               run_locally do
                 execute :rsync, "-az --rsh='#{ssh}' #{src} #{host}:#{dest}"
               end
             end
           else
-            on c.servers, in: :groups, limit: c.max_parallels do
+            on hosts, in: :groups, limit: c.max_parallels do
               upload! src, dest
             end
           end
