@@ -22,7 +22,8 @@ class Capistrano::NetStorage::Archiver::Zip < Capistrano::NetStorage::Archiver::
 
   def extract
     c = config
-    on c.servers, in: :groups, limit: c.max_parallels do
+    hosts = ::Capistrano::Configuration.env.filter(c.servers)
+    on hosts, in: :groups, limit: c.max_parallels do
       execute :unzip, c.archive_path, '-d', release_path
       execute :rm, '-f', c.archive_path
     end
