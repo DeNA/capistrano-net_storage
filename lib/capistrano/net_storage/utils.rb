@@ -14,35 +14,23 @@ module Capistrano
       end
 
       # @param dest_dir [String, Pathname] Destination directory on remote to copy local files into
-      # @param dest_path [String, Pathname] Destination file path on remote to copy local files to
-      # You can provide either of +dest_dir+ or +dest_path+, or files are copied to same pathes
-      def upload_files(files, dest_dir: nil, dest_path: nil)
+      def upload_files(files, dest_dir)
         c = config
         if c.upload_files_by_rsync?
           on c.servers, in: :groups, limit: c.max_parallels do |host|
             files.each do |src|
-              dest = build_dest(src, dest_dir: dest_dir, dest_path: dest_path)
               ssh = build_ssh_command(host)
               run_locally do
-                execute :rsync, "-az --rsh='#{ssh}' #{src} #{host}:#{dest}"
+                execute :rsync, "-az --rsh='#{ssh}' #{src} #{host}:#{dest_dir}"
               end
             end
           end
         else
           on c.servers, in: :groups, limit: c.max_parallels do
             files.each do |src|
-              dest = build_dest(src, dest_dir: dest_dir, dest_path: dest_path)
-              upload! src, dest
+              upload! src, dest_dir
             end
           end
-        end
-      end
-
-      def build_dest(src, dest_dir: nil, dest_path: nil)
-        basename = File.basename(src)
-        dest_path || begin
-          dir = dest_dir || File.dirname(src)
-          File.join(dir, basename)
         end
       end
 

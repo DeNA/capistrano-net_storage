@@ -48,7 +48,10 @@ module Capistrano
           end
         end
 
-        bundle_config_path = "#{c.local_base_path}/bundle_config"
+        run_locally do
+          execute :mkdir, '-p', "#{c.local_base_path}/.bundle"
+        end
+        bundle_config_path = "#{c.local_base_path}/.bundle/config"
         File.open(bundle_config_path, 'w') do |file|
           file.print(<<-EOS)
 ---
@@ -60,7 +63,7 @@ BUNDLE_BIN: "#{release_path.join('bin')}"
 EOS
         end
 
-        upload_files([bundle_config_path], dest_path: release_path.join('.bundle', 'config'))
+        upload_files([bundle_config_path], release_path.join('.bundle'))
       end
     end
   end
