@@ -1,3 +1,9 @@
+## 0.3.1 (2017/11/6)
+
+Fix Bug:
+
+- Enable HOSTS settings when using cap deploy --hosts (#6) @SpringMT
+
 ## 0.3.0 (2017/7/14)
 
 Improve:
