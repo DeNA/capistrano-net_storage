@@ -18,9 +18,9 @@ module Capistrano
         c = config
         if c.upload_files_by_rsync?
           on c.servers, in: :groups, limit: c.max_parallels do |host|
-            files.each do |src|
-              ssh = build_ssh_command(host)
-              run_locally do
+            ssh = build_ssh_command(host)
+            run_locally do
+              files.each do |src|
                 execute :rsync, "-az --rsh='#{ssh}' #{src} #{host}:#{dest_dir}"
               end
             end
