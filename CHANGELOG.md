@@ -1,3 +1,9 @@
+## 0.3.2 (2017/11/7)
+
+Fix Bug:
+
+- Use Capistrano::Configuration.env.filter (#8) @SpringMT
+
 ## 0.3.1 (2017/11/6)
 
 Fix Bug:
