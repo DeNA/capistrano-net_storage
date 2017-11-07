@@ -6,8 +6,6 @@ module Capistrano
   module NetStorage
     # Common utility methods
     module Utils
-      private
-
       # @see lib/capistrano/net_storage/base.rb
       def config
         Capistrano::NetStorage.config
@@ -16,10 +14,11 @@ module Capistrano
       # @param dest_dir [String, Pathname] Destination directory on remote to copy local files into
       def upload_files(files, dest_dir)
         c = config
-        hosts = ::Capistrano::Configuration.env.filter(c.servers)
+        #hosts = ::Capistrano::Configuration.env.filter(c.servers)
         if c.upload_files_by_rsync?
-          Parallel.each(hosts, in_threads: c.max_parallels) do |host|
-            ssh = build_ssh_command(host)
+          on c.servers, in: :groups, limit: c.max_parallels do |host|
+          #Parallel.each(hosts, in_threads: c.max_parallels) do |host|
+            Capistrano::NetStorage::Utils.build_ssh_command('host')
             run_locally do
               files.each do |src|
                 execute :rsync, "-az --rsh='#{ssh}' #{src} #{host}:#{dest_dir}"
