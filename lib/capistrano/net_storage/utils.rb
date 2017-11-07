@@ -14,10 +14,10 @@ module Capistrano
       # @param dest_dir [String, Pathname] Destination directory on remote to copy local files into
       def upload_files(files, dest_dir)
         c = config
-        #hosts = ::Capistrano::Configuration.env.filter(c.servers)
+        hosts = ::Capistrano::Configuration.env.filter(c.servers)
         if c.upload_files_by_rsync?
-          on c.servers, in: :groups, limit: c.max_parallels do |host|
-          #Parallel.each(hosts, in_threads: c.max_parallels) do |host|
+          #on c.servers, in: :groups, limit: c.max_parallels do |host|
+          Parallel.each(hosts, in_threads: c.max_parallels) do |host|
             Capistrano::NetStorage::Utils.build_ssh_command('host')
             run_locally do
               files.each do |src|
