@@ -23,10 +23,10 @@ class Capistrano::NetStorage::Archiver::TarGzip < Capistrano::NetStorage::Archiv
   def extract
     c = config
     on c.servers, in: :groups, limit: c.max_parallels do
+      execute :mkdir, '-p', c.archives_path
       execute :mkdir, '-p', release_path
       within release_path do
         execute :tar, 'xzf', c.archive_path
-        execute :rm, '-f', c.archive_path
       end
     end
   end
