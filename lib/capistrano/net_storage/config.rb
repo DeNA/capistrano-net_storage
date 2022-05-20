@@ -53,7 +53,7 @@ module Capistrano
         @skip_bundle
       end
 
-      # If +true+, create archive ONLY when it's not found on Network Storage.
+      # If +true+, create archive ONLY when it's not found on remote storage.
       # Otherwise, create archive ALWAYS.
       # Defaults to +true+
       def archive_on_missing?
@@ -83,56 +83,63 @@ module Capistrano
       # Path settings
       #
 
-      # Path of base directory on localhost
+      # Path of base directory on local
       # @return [Pathname]
       def local_base_path
         @local_base_path ||= pathname(fetch(:net_storage_local_base_path, "#{Dir.pwd}/.local_repo"))
       end
 
-      # Path to clone repository on localhost
+      # Path to clone repository on local
       # @return [Pathname]
       def local_mirror_path
         @local_mirror_path ||= pathname(fetch(:net_storage_local_mirror_path))
         @local_mirror_path ||= local_base_path.join('mirror')
       end
 
-      # Path to keep release directories and archives on localhost
+      # Path to keep release directories on local
       # @return [Pathname]
       def local_releases_path
         @local_releases_path ||= pathname(fetch(:net_storage_local_releases_path))
         @local_releases_path ||= local_base_path.join('releases')
       end
 
-      # Path to take a snapshot of repository for release
+      # Path to take a snapshot of repository for release on local
       # @return [Pathname]
       def local_release_path
-        @local_release_path ||= pathname(fetch(:net_storage_local_release_path))
         @local_release_path ||= local_releases_path.join(release_timestamp)
       end
 
-      # Shared directory to install gems
+      # Shared directory to install gems on local
       # @return [Pathname]
       def local_bundle_path
         @local_bundle_path ||= pathname(fetch(:net_storage_local_bundle_path))
         @local_bundle_path ||= local_base_path.join('bundle')
       end
 
-      # Destination path to archive application on localhost
+      # Path of archive directories on local
       # @return [Pathname]
-      def local_archive_path
-        @local_archive_path ||= pathname(fetch(:net_storage_local_archive_path))
-        @local_archive_path ||= pathname("#{local_release_path}.#{archive_suffix}")
+      def local_archives_path
+        @local_archives_path ||= pathname(fetch(:net_storage_local_archives_path))
+        @local_archives_path ||= local_base_path.join('archives')
       end
 
-      # Path of archive file to be downloaded on servers
+      # Destination path to archive application on local
+      # @return [Pathname]
+      def local_archive_path
+        @local_archive_path ||= local_archives_path.join("#{release_timestamp}.#{archive_suffix}")
+      end
+
+      # Path of archive directories on remote servers
+      # @return [Pathname]
+      def archives_path
+        @archives_path ||= pathname(fetch(:net_storage_archives_path))
+        @archives_path ||= deploy_path.join('net_storage_archives')
+      end
+
+      # Path of archive file to be downloaded on remote servers
       # @return [Pathname]
       def archive_path
-        @archive_path ||= pathname(fetch(:net_storage_archive_path))
-        @archive_path ||= begin
-          # Set release_timestamp if not set
-          fetch(:release_path, set_release_path)
-          pathname("#{release_path}.#{archive_suffix}")
-        end
+        @archive_path ||= archives_path.join("#{release_timestamp}.#{archive_suffix}")
       end
 
       # Suffix of archive file

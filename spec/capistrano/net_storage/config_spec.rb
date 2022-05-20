@@ -39,8 +39,10 @@ describe Capistrano::NetStorage::Config do
       expect(config.local_releases_path.to_s).to eq "#{config.local_base_path}/releases"
       expect(config.local_release_path.to_s).to eq "#{config.local_releases_path}/#{config.release_timestamp}"
       expect(config.local_bundle_path.to_s).to eq "#{config.local_base_path}/bundle"
-      expect(config.local_archive_path.to_s).to eq "#{config.local_release_path}.zip"
-      expect(config.archive_path.to_s).to eq "#{config.release_path}.zip"
+      expect(config.local_archives_path.to_s).to eq "#{config.local_base_path}/archives"
+      expect(config.local_archive_path.to_s).to eq "#{config.local_archives_path}/#{config.release_timestamp}.zip"
+      expect(config.archives_path.to_s).to eq "#{config.deploy_path}/net_storage_archives"
+      expect(config.archive_path.to_s).to eq "#{config.archives_path}/#{config.release_timestamp}.zip"
     end
 
     it 'Customized parameters' do
@@ -60,10 +62,9 @@ describe Capistrano::NetStorage::Config do
         net_storage_local_base_path: '/path/to/local_base',
         net_storage_local_mirror_path: '/path/to/local_mirror',
         net_storage_local_releases_path: Pathname.new('/path/to/local_releases'),
-        net_storage_local_release_path: '/path/to/local_release',
         net_storage_local_bundle_path: '/path/to/local_bundle',
-        net_storage_local_archive_path: '/path/to/local_archive',
-        net_storage_archive_path: '/path/to/archive',
+        net_storage_local_archives_path: '/path/to/local_archives',
+        net_storage_archives_path: '/path/to/archives',
       }.each { |k, v| env.set k, v }
 
       # executor_class
@@ -83,10 +84,12 @@ describe Capistrano::NetStorage::Config do
       expect(config.local_base_path.to_s).to eq '/path/to/local_base'
       expect(config.local_mirror_path.to_s).to eq '/path/to/local_mirror'
       expect(config.local_releases_path.to_s).to eq '/path/to/local_releases'
-      expect(config.local_release_path.to_s).to eq '/path/to/local_release'
+      expect(config.local_release_path.to_s).to eq "#{config.local_releases_path}/#{config.release_timestamp}"
       expect(config.local_bundle_path.to_s).to eq '/path/to/local_bundle'
-      expect(config.local_archive_path.to_s).to eq '/path/to/local_archive'
-      expect(config.archive_path.to_s).to eq '/path/to/archive'
+      expect(config.local_archives_path.to_s).to eq '/path/to/local_archives'
+      expect(config.local_archive_path.to_s).to eq "#{config.local_archives_path}/#{config.release_timestamp}.zip"
+      expect(config.archives_path.to_s).to eq '/path/to/archives'
+      expect(config.archive_path.to_s).to eq "#{config.archives_path}/#{config.release_timestamp}.zip"
     end
   end
 end

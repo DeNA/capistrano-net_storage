@@ -1,3 +1,21 @@
+## 0.4.0 (2022/05/17)
+
+Fix Bug:
+
+- Fix a cleanup issue reported at #9 (#12) @naro143
+  - Before:
+    - Archives such as `.tar.gz` and `.zip` are handled in `releases` directory of each server.
+    - Incomplete deployment leads to uncollected garbage directory under `releases`.
+  - After:
+    - Archives are handled within `#{deploy_to}/net_storage_archives` directory of each server.
+    - NetStorage cleanup `net_storage_archives` directory just as Capistrano do in `releases` directory.
+    - One successful deployment can cleanup old archives and there is no more Capistrano warnings.
+  - This includes the same cleanup policy for `local_releases_path` and `local_archives_path` of NetStorage.
+
+Changes:
+
+- Change task name `net_storage:cleanup_remote_release` to `net_storage:cleanup_archives_on_remote_storage`
+
 ## 0.3.2 (2017/11/7)
 
 Fix Bug:

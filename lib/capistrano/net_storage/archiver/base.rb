@@ -16,8 +16,7 @@ module Capistrano
           raise NotImplementedError
         end
 
-        # Extract archive.
-        # Archive file should be cleaned up after extracted.
+        # Extract archive
         # @abstract
         def extract
           raise NotImplementedError

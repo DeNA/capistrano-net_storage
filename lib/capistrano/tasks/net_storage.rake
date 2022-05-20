@@ -43,19 +43,31 @@ namespace :net_storage do
   end
   after 'net_storage:create_release', 'net_storage:sync_config'
 
-  desc 'Clean up local old archives and snapshots'
-  task :cleanup_local_release do
-    Capistrano::NetStorage.cleaner.cleanup_local_release
+  desc 'Clean up old release directories on local'
+  task :cleanup_local_releases do
+    Capistrano::NetStorage.cleaner.cleanup_local_releases
   end
-  after 'deploy:cleanup', 'net_storage:cleanup_local_release'
+  after 'deploy:cleanup', 'net_storage:cleanup_local_releases'
 
-  desc 'Clean up old archives on remote storage'
-  task :cleanup_remote_release do
+  desc 'Clean up old archive files on remote storage'
+  task :cleanup_archives_on_remote_storage do
     transport = Capistrano::NetStorage.transport
     next unless transport.respond_to?(:cleanup)
     transport.cleanup
   end
-  after 'net_storage:cleanup_local_release', 'net_storage:cleanup_remote_release'
+  after 'deploy:cleanup', 'net_storage:cleanup_archives_on_remote_storage'
+
+  desc 'Clean up old archive files on remote servers'
+  task :cleanup_archives do
+    Capistrano::NetStorage.cleaner.cleanup_archives
+  end
+  after 'deploy:cleanup', 'net_storage:cleanup_archives'
+
+  desc 'Clean up old archive files on local'
+  task :cleanup_local_archives do
+    Capistrano::NetStorage.cleaner.cleanup_local_archives
+  end
+  after 'deploy:cleanup', 'net_storage:cleanup_local_archives'
 
   task prepare_archive: %i(net_storage:scm:update net_storage:check:bundler) do
     config = Capistrano::NetStorage.config
@@ -103,6 +115,7 @@ namespace :net_storage do
         config.local_base_path,
         config.local_mirror_path,
         config.local_releases_path,
+        config.local_archives_path,
       ]
       dirs << config.local_bundle_path unless config.skip_bundle?
       run_locally do

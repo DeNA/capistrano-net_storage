@@ -1,7 +1,7 @@
 module Capistrano
   module NetStorage
     module Transport
-      # Abstract class to transport archive from/to Network Storage
+      # Abstract class to transport archive from/to remote storage
       # @abstract
       class Base
         # Check prerequisites for transport
