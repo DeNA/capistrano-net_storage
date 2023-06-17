@@ -17,17 +17,14 @@ module Capistrano
       def upload_files(files, dest_dir)
         c = config
         hosts = ::Capistrano::Configuration.env.filter(c.servers)
-        if c.upload_files_by_rsync?
-          Parallel.each(hosts, in_threads: c.max_parallels) do |host|
+
+        on hosts, in: :groups, limit: c.max_parallels do |host|
+          if c.upload_files_by_rsync?
             ssh = build_ssh_command(host)
             run_locally do
-              files.each do |src|
-                execute :rsync, "-az --rsh='#{ssh}' #{src} #{host}:#{dest_dir}"
-              end
+              execute :rsync, "-az --rsh='#{ssh}' #{files.join(' ')} #{host}:#{dest_dir}"
             end
-          end
-        else
-          on c.servers, in: :groups, limit: c.max_parallels do
+          else
             files.each do |src|
               upload! src, dest_dir
             end
