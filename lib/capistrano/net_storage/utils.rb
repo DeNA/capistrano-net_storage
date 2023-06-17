@@ -1,5 +1,3 @@
-require 'parallel'
-
 require 'capistrano/net_storage/base'
 
 module Capistrano
@@ -17,17 +15,19 @@ module Capistrano
       def upload_files(files, dest_dir)
         c = config
         hosts = ::Capistrano::Configuration.env.filter(c.servers)
-        if c.upload_files_by_rsync?
-          Parallel.each(hosts, in_threads: c.max_parallels) do |host|
-            ssh = build_ssh_command(host)
+
+        # FIXME: This is a very workaround to architectural issue. Do not copy.
+        build_rsh_option = -> (host) {
+          build_ssh_command(host)
+        }
+
+        on hosts, in: :groups, limit: c.max_parallels do |host|
+          if c.upload_files_by_rsync?
+            rsh_option = build_rsh_option.call(host)
             run_locally do
-              files.each do |src|
-                execute :rsync, "-az --rsh='#{ssh}' #{src} #{host}:#{dest_dir}"
-              end
+              execute :rsync, "-az --rsh='#{rsh_option}' #{files.join(' ')} #{host.hostname}:#{dest_dir}"
             end
-          end
-        else
-          on c.servers, in: :groups, limit: c.max_parallels do
+          else
             files.each do |src|
               upload! src, dest_dir
             end
