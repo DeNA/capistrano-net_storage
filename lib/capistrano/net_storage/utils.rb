@@ -1,5 +1,3 @@
-require 'parallel'
-
 require 'capistrano/net_storage/base'
 
 module Capistrano
