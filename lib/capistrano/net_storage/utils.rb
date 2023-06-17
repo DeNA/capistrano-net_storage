@@ -18,11 +18,16 @@ module Capistrano
         c = config
         hosts = ::Capistrano::Configuration.env.filter(c.servers)
 
+        # FIXME: This is a very workaround to architectural issue. Do not copy.
+        build_rsh_option = -> (host) {
+          build_ssh_command(host)
+        }
+
         on hosts, in: :groups, limit: c.max_parallels do |host|
           if c.upload_files_by_rsync?
-            ssh = build_ssh_command(host)
+            rsh_option = build_rsh_option.call(host)
             run_locally do
-              execute :rsync, "-az --rsh='#{ssh}' #{files.join(' ')} #{host}:#{dest_dir}"
+              execute :rsync, "-az --rsh='#{rsh_option}' #{files.join(' ')} #{host.hostname}:#{dest_dir}"
             end
           else
             files.each do |src|
