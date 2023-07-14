@@ -110,14 +110,16 @@ namespace :net_storage do
 
     task :directories do
       config = Capistrano::NetStorage.config
-      dirs = [
-        config.local_base_path,
-        config.local_mirror_path,
-        config.local_releases_path,
-        config.local_archives_path,
-      ]
+
       run_locally do
-        dirs.each { |dir| execute :mkdir, '-p', dir }
+        [
+          config.local_base_path,
+          config.local_mirror_path,
+          config.local_releases_path,
+          config.local_archives_path,
+        ].each do |path|
+          execute :mkdir, '-p', path
+        end
       end
     end
   end
