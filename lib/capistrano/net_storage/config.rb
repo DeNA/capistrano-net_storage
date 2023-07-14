@@ -80,6 +80,13 @@ module Capistrano
         @rsync_options ||= fetch(:net_storage_rsync_options, fetch(:ssh_options, {}))
       end
 
+      # If your repository consists of multiple Rails apps, you can enable this for seamless deployment
+      def multi_app_mode?
+        return @multi_app_mode if instance_variable_defined? :@multi_app_mode
+
+        @multi_app_mode = fetch(:net_storage_multi_app_mode, false)
+      end
+
       #
       # Path settings
       #

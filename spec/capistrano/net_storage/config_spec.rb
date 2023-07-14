@@ -34,6 +34,7 @@ describe Capistrano::NetStorage::Config do
       expect(config.archive_on_missing?).to be true
       expect(config.upload_files_by_rsync?).to be false
       expect(config.rsync_options).to eq({})
+      expect(config.multi_app_mode?).to be false
       expect(config.local_base_path.to_s).to eq "#{Dir.pwd}/.local_repo"
       expect(config.local_mirror_path.to_s).to eq "#{config.local_base_path}/mirror"
       expect(config.local_releases_path.to_s).to eq "#{config.local_base_path}/releases"
@@ -60,6 +61,7 @@ describe Capistrano::NetStorage::Config do
         net_storage_archive_on_missing: false,
         net_storage_upload_files_by_rsync: true,
         net_storage_rsync_options: { user: 'bob' },
+        net_storage_multi_app_mode: true,
         net_storage_local_base_path: '/path/to/local_base',
         net_storage_local_mirror_path: '/path/to/local_mirror',
         net_storage_local_releases_path: Pathname.new('/path/to/local_releases'),
@@ -82,6 +84,7 @@ describe Capistrano::NetStorage::Config do
       expect(config.archive_on_missing?).to be false
       expect(config.upload_files_by_rsync?).to be true
       expect(config.rsync_options).to eq(user: 'bob')
+      expect(config.multi_app_mode?).to be true
       expect(config.local_base_path.to_s).to eq '/path/to/local_base'
       expect(config.local_mirror_path.to_s).to eq '/path/to/local_mirror'
       expect(config.local_releases_path.to_s).to eq '/path/to/local_releases'
