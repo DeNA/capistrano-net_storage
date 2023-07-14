@@ -18,7 +18,7 @@ module Capistrano
           within config.local_release_app_path do
             ::Bundler.with_clean_env do
               install_path = Pathname.new('vendor/bundle') # must be a relative path for portability between local and remote
-              execute :mkdir '-p', install_path
+              execute :mkdir, '-p', install_path
 
               # Sync installed gems from shared directory to speed up installation
               execute :rsync, '-a', '--delete', "#{config.local_bundle_path}/", install_path
