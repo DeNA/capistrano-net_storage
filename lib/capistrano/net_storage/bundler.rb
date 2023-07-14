@@ -14,25 +14,25 @@ module Capistrano
 
       # Do bundle install locally. Installed gems are to be included to the release.
       def install
-        c = config
         run_locally do
-          local_release_bundle_path = c.local_release_path.join('vendor', 'bundle')
+          local_release_bundle_path = config.local_release_path.join('vendor', 'bundle')
           execute :mkdir, '-p', local_release_bundle_path
-          execute :mkdir, '-p', "#{c.local_release_path}/.bundle"
-          # Copy shared gems to release bundle path beforehand to reuse installed previously
-          execute :rsync, '-a', "#{c.local_bundle_path}/", "#{local_release_bundle_path}/"
 
-          within c.local_release_path do
+          # Copy shared gems to release bundle path beforehand to reuse installed previously
+          execute :rsync, '-a', '--delete', "#{config.local_bundle_path}/", local_release_bundle_path
+
+          within config.local_release_path do
             ::Bundler.with_clean_env do
-              install_options = %W(
-                --gemfile #{c.local_release_path}/Gemfile --deployment --quiet
-                --path #{local_release_bundle_path} --without development test
-              )
-              execute :bundle, 'install', *install_options
+              # Always set config
+              execute :bundle, 'config', 'set', '--local', 'deployment', 'true'
+              execute :bundle, 'config', 'set', '--local', 'path', local_release_bundle_path
+              execute :bundle, 'config', 'set', '--local', 'without', 'development test'
+
+              execute :bundle, 'install', '--quiet'
               execute :bundle, 'clean'
+
               # Sync installed gems to shared directory to reuse them next time
-              rsync_options = %W(-a --delete #{local_release_bundle_path}/ #{c.local_bundle_path}/)
-              execute :rsync, *rsync_options
+              execute :rsync, '-a', '--delete', "#{local_release_bundle_path}/", config.local_bundle_path
             end
           end
         end
