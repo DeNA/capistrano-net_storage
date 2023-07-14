@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe Capistrano::NetStorage::Config do
   let(:config) { Capistrano::NetStorage::Config.new }
+  let(:env) { Capistrano::Configuration.env } # Capistrano::NetStorage::Config fetches from global env
 
-  before :context do
-    env = Capistrano::Configuration.env
+  before do
     env.set :deploy_to, '/path/to/deploy'
     env.server 'web1', role: %w(web), active: true
     env.server 'web2', role: %w(web), no_release: true
@@ -13,7 +13,7 @@ describe Capistrano::NetStorage::Config do
     env.role :db,  %w(db1)
   end
 
-  after :context do
+  after do
     Capistrano::Configuration.reset!
   end
 
@@ -48,7 +48,6 @@ describe Capistrano::NetStorage::Config do
     it 'Customized parameters' do
       archiver_class = Struct.new(:file_extension).new('super.zip')
 
-      env = Capistrano::Configuration.env
       {
         net_storage_archiver: archiver_class,
         net_storage_scm: Object,
