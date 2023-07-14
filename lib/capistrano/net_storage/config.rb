@@ -154,6 +154,8 @@ module Capistrano
       def archive_file_extension
         executor_class(:archiver).file_extension
       end
+
+      alias archive_suffix archive_file_extension # backward compatibility
     end
   end
 end
