@@ -91,6 +91,11 @@ module Capistrano
       # Path settings
       #
 
+      # Path to application of remote release_path
+      def release_app_path
+        @release_app_path ||= multi_app_mode? ? Pathname.new(release_path).join(fetch(:application)) : Pathname.new(release_path)
+      end
+
       # Path of base directory on local
       # @return [Pathname]
       def local_base_path
@@ -113,6 +118,11 @@ module Capistrano
       # @return [Pathname]
       def local_release_path
         @local_release_path ||= local_releases_path.join(release_timestamp)
+      end
+
+      # Path to application of local release_path
+      def local_release_app_path
+        @local_release_app_path ||= multi_app_mode? ? local_release_path.join(fetch(:application)) : local_release_path
       end
 
       # Shared directory to install gems on local

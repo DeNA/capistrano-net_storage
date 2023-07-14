@@ -5,6 +5,7 @@ describe Capistrano::NetStorage::Config do
   let(:env) { Capistrano::Configuration.env } # Capistrano::NetStorage::Config fetches from global env
 
   before do
+    env.set :application, 'api'
     env.set :deploy_to, '/path/to/deploy'
     env.server 'web1', role: %w(web), active: true
     env.server 'web2', role: %w(web), no_release: true
@@ -35,10 +36,12 @@ describe Capistrano::NetStorage::Config do
       expect(config.upload_files_by_rsync?).to be false
       expect(config.rsync_options).to eq({})
       expect(config.multi_app_mode?).to be false
+      expect(config.release_app_path.to_s).to eq "/path/to/deploy/current" # SEE: https://github.com/capistrano/capistrano/blob/31e142d56f8d894f28404fb225dcdbe7539bda18/lib/capistrano/dsl/paths.rb#L21-L28
       expect(config.local_base_path.to_s).to eq "#{Dir.pwd}/.local_repo"
       expect(config.local_mirror_path.to_s).to eq "#{config.local_base_path}/mirror"
       expect(config.local_releases_path.to_s).to eq "#{config.local_base_path}/releases"
       expect(config.local_release_path.to_s).to eq "#{config.local_releases_path}/#{config.release_timestamp}"
+      expect(config.local_release_app_path.to_s).to eq "#{config.local_releases_path}/#{config.release_timestamp}"
       expect(config.local_bundle_path.to_s).to eq "#{config.local_base_path}/bundle"
       expect(config.local_archives_path.to_s).to eq "#{config.local_base_path}/archives"
       expect(config.local_archive_path.to_s).to eq "#{config.local_archives_path}/#{config.release_timestamp}.zip"
@@ -85,10 +88,12 @@ describe Capistrano::NetStorage::Config do
       expect(config.upload_files_by_rsync?).to be true
       expect(config.rsync_options).to eq(user: 'bob')
       expect(config.multi_app_mode?).to be true
+      expect(config.release_app_path.to_s).to eq "/path/to/deploy/current/api" # SEE: https://github.com/capistrano/capistrano/blob/31e142d56f8d894f28404fb225dcdbe7539bda18/lib/capistrano/dsl/paths.rb#L21-L28
       expect(config.local_base_path.to_s).to eq '/path/to/local_base'
       expect(config.local_mirror_path.to_s).to eq '/path/to/local_mirror'
       expect(config.local_releases_path.to_s).to eq '/path/to/local_releases'
       expect(config.local_release_path.to_s).to eq "#{config.local_releases_path}/#{config.release_timestamp}"
+      expect(config.local_release_app_path.to_s).to eq "#{config.local_releases_path}/#{config.release_timestamp}/api"
       expect(config.local_bundle_path.to_s).to eq '/path/to/local_bundle'
       expect(config.local_archives_path.to_s).to eq '/path/to/local_archives'
       expect(config.local_archive_path.to_s).to eq "#{config.local_archives_path}/#{config.release_timestamp}.super.zip"
