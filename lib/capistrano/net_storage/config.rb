@@ -16,6 +16,7 @@ module Capistrano
         bundler: Capistrano::NetStorage::Bundler,
         transport: nil,
       }
+      DEFAULT_LOCAL_BASE_PATH = Pathname.new("#{Dir.pwd}/.local_repo")
 
       def executor_class(type)
         unless DEFAULT_EXECUTOR_CLASS.key?(type)
@@ -92,7 +93,7 @@ module Capistrano
       # Path of base directory on local
       # @return [Pathname]
       def local_base_path
-        Pathname.new(fetch(:net_storage_local_base_path, "#{Dir.pwd}/.local_repo"))
+        Pathname.new(fetch(:net_storage_local_base_path, DEFAULT_LOCAL_BASE_PATH))
       end
 
       # Path to clone repository on local
