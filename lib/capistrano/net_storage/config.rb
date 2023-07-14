@@ -1,3 +1,5 @@
+require 'pathname'
+
 require 'capistrano/net_storage/error'
 require 'capistrano/net_storage/bundler'
 require 'capistrano/net_storage/archiver/zip'
@@ -86,20 +88,20 @@ module Capistrano
       # Path of base directory on local
       # @return [Pathname]
       def local_base_path
-        @local_base_path ||= pathname(fetch(:net_storage_local_base_path, "#{Dir.pwd}/.local_repo"))
+        @local_base_path ||= Pathname.new(fetch(:net_storage_local_base_path, "#{Dir.pwd}/.local_repo"))
       end
 
       # Path to clone repository on local
       # @return [Pathname]
       def local_mirror_path
-        @local_mirror_path ||= pathname(fetch(:net_storage_local_mirror_path))
+        @local_mirror_path ||= Pathname.new(fetch(:net_storage_local_mirror_path))
         @local_mirror_path ||= local_base_path.join('mirror')
       end
 
       # Path to keep release directories on local
       # @return [Pathname]
       def local_releases_path
-        @local_releases_path ||= pathname(fetch(:net_storage_local_releases_path))
+        @local_releases_path ||= Pathname.new(fetch(:net_storage_local_releases_path))
         @local_releases_path ||= local_base_path.join('releases')
       end
 
@@ -112,14 +114,14 @@ module Capistrano
       # Shared directory to install gems on local
       # @return [Pathname]
       def local_bundle_path
-        @local_bundle_path ||= pathname(fetch(:net_storage_local_bundle_path))
+        @local_bundle_path ||= Pathname.new(fetch(:net_storage_local_bundle_path))
         @local_bundle_path ||= local_base_path.join('bundle')
       end
 
       # Path of archive directories on local
       # @return [Pathname]
       def local_archives_path
-        @local_archives_path ||= pathname(fetch(:net_storage_local_archives_path))
+        @local_archives_path ||= Pathname.new(fetch(:net_storage_local_archives_path))
         @local_archives_path ||= local_base_path.join('archives')
       end
 
@@ -132,7 +134,7 @@ module Capistrano
       # Path of archive directories on remote servers
       # @return [Pathname]
       def archives_path
-        @archives_path ||= pathname(fetch(:net_storage_archives_path))
+        @archives_path ||= Pathname.new(fetch(:net_storage_archives_path))
         @archives_path ||= deploy_path.join('net_storage_archives')
       end
 
@@ -152,17 +154,6 @@ module Capistrano
           'tar.gz'
         else
           'archive'
-        end
-      end
-
-      private
-
-      def pathname(path)
-        case path
-        when String
-          Pathname.new(path)
-        else
-          path
         end
       end
     end
