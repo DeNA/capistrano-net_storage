@@ -94,15 +94,13 @@ module Capistrano
       # Path to clone repository on local
       # @return [Pathname]
       def local_mirror_path
-        @local_mirror_path ||= Pathname.new(fetch(:net_storage_local_mirror_path))
-        @local_mirror_path ||= local_base_path.join('mirror')
+        @local_mirror_path ||= Pathname.new(fetch(:net_storage_local_mirror_path, local_base_path.join('mirror')))
       end
 
       # Path to keep release directories on local
       # @return [Pathname]
       def local_releases_path
-        @local_releases_path ||= Pathname.new(fetch(:net_storage_local_releases_path))
-        @local_releases_path ||= local_base_path.join('releases')
+        @local_releases_path ||= Pathname.new(fetch(:net_storage_local_releases_path, local_base_path.join('releases')))
       end
 
       # Path to take a snapshot of repository for release on local
@@ -114,15 +112,13 @@ module Capistrano
       # Shared directory to install gems on local
       # @return [Pathname]
       def local_bundle_path
-        @local_bundle_path ||= Pathname.new(fetch(:net_storage_local_bundle_path))
-        @local_bundle_path ||= local_base_path.join('bundle')
+        @local_bundle_path ||= Pathname.new(fetch(:net_storage_local_bundle_path, local_base_path.join('bundle')))
       end
 
       # Path of archive directories on local
       # @return [Pathname]
       def local_archives_path
-        @local_archives_path ||= Pathname.new(fetch(:net_storage_local_archives_path))
-        @local_archives_path ||= local_base_path.join('archives')
+        @local_archives_path ||= Pathname.new(fetch(:net_storage_local_archives_path, local_base_path.join('archives')))
       end
 
       # Destination path to archive application on local
@@ -134,8 +130,7 @@ module Capistrano
       # Path of archive directories on remote servers
       # @return [Pathname]
       def archives_path
-        @archives_path ||= Pathname.new(fetch(:net_storage_archives_path))
-        @archives_path ||= deploy_path.join('net_storage_archives')
+        @archives_path ||= Pathname.new(fetch(:net_storage_archives_path, deploy_path.join('net_storage_archives')))
       end
 
       # Path of archive file to be downloaded on remote servers
