@@ -38,10 +38,6 @@ module Capistrano
           end
         end
       end
-
-      # Nothing is required. This methoed exists just for backward compatibility
-      def sync_config
-      end
     end
   end
 end

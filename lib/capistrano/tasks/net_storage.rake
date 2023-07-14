@@ -39,7 +39,6 @@ namespace :net_storage do
   task :sync_config do
     config = Capistrano::NetStorage.config
     Capistrano::NetStorage.scm.sync_config
-    Capistrano::NetStorage.bundler.sync_config unless config.skip_bundle?
   end
   after 'net_storage:create_release', 'net_storage:sync_config'
 
