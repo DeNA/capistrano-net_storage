@@ -25,7 +25,7 @@ module Capistrano
             ::Bundler.with_clean_env do
               # Always set config
               execute :bundle, 'config', 'set', '--local', 'deployment', 'true'
-              execute :bundle, 'config', 'set', '--local', 'path', local_release_bundle_path
+              execute :bundle, 'config', 'set', '--local', 'path', Pathname.new('vendor/bundle') # Use relative path to ease rsync
               execute :bundle, 'config', 'set', '--local', 'without', 'development test'
 
               execute :bundle, 'install', '--quiet'
