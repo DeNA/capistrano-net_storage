@@ -39,32 +39,8 @@ module Capistrano
         end
       end
 
-      # Create +.bundle/config+ at release path on remote servers
+      # Nothing is required. This methoed exists just for backward compatibility
       def sync_config
-        c = config
-
-        on c.servers, in: :groups, limit: c.max_parallels do
-          within release_path do
-            execute :mkdir, '-p', '.bundle'
-          end
-        end
-
-        run_locally do
-          execute :mkdir, '-p', "#{c.local_base_path}/.bundle"
-        end
-        bundle_config_path = "#{c.local_base_path}/.bundle/config"
-        File.open(bundle_config_path, 'w') do |file|
-          file.print(<<-EOS)
----
-BUNDLE_FROZEN: "1"
-BUNDLE_PATH: "#{release_path.join('vendor', 'bundle')}"
-BUNDLE_WITHOUT: "development:test"
-BUNDLE_DISABLE_SHARED_GEMS: "true"
-BUNDLE_BIN: "#{release_path.join('bin')}"
-EOS
-        end
-
-        upload_files([bundle_config_path], release_path.join('.bundle'))
       end
     end
   end
