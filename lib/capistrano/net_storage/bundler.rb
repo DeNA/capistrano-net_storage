@@ -27,6 +27,7 @@ module Capistrano
               execute :bundle, 'config', 'set', '--local', 'deployment', 'true'
               execute :bundle, 'config', 'set', '--local', 'path', Pathname.new('vendor/bundle') # Use relative path to ease rsync
               execute :bundle, 'config', 'set', '--local', 'without', 'development test'
+              execute :bundle, 'config', 'set', '--local', 'disable_shared_gems', 'true'
 
               execute :bundle, 'install', '--quiet'
               execute :bundle, 'clean'
