@@ -12,7 +12,7 @@ module Capistrano
         end
       end
 
-      # Do bundle install locally. Installed gems are to be included to the release.
+      # bundle install locally. `.bundle/config` and installed gems are to be included in the release and archive.
       def install
         run_locally do
           local_release_bundle_path = config.local_release_path.join('vendor', 'bundle')
