@@ -50,9 +50,7 @@ namespace :net_storage do
 
   desc 'Clean up old archive files on remote storage'
   task :cleanup_archives_on_remote_storage do
-    transport = Capistrano::NetStorage.transport
-    next unless transport.respond_to?(:cleanup)
-    transport.cleanup
+    Capistrano::NetStorage.transport.cleanup
   end
   after 'deploy:cleanup', 'net_storage:cleanup_archives_on_remote_storage'
 
