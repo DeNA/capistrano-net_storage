@@ -30,4 +30,8 @@ class Capistrano::NetStorage::Archiver::TarGzip < Capistrano::NetStorage::Archiv
       end
     end
   end
+
+  def self.file_extension
+    'tar.gz'
+  end
 end

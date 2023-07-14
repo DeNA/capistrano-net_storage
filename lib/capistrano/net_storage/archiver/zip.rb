@@ -30,4 +30,8 @@ class Capistrano::NetStorage::Archiver::Zip < Capistrano::NetStorage::Archiver::
       end
     end
   end
+
+  def self.file_extension
+    'zip'
+  end
 end

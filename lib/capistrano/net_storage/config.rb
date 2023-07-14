@@ -123,7 +123,7 @@ module Capistrano
       # Destination path to archive application on local
       # @return [Pathname]
       def local_archive_path
-        @local_archive_path ||= local_archives_path.join("#{release_timestamp}.#{archive_suffix}")
+        @local_archive_path ||= local_archives_path.join("#{release_timestamp}.#{archive_file_extension}")
       end
 
       # Path of archive directories on remote servers
@@ -135,20 +135,13 @@ module Capistrano
       # Path of archive file to be downloaded on remote servers
       # @return [Pathname]
       def archive_path
-        @archive_path ||= archives_path.join("#{release_timestamp}.#{archive_suffix}")
+        @archive_path ||= archives_path.join("#{release_timestamp}.#{archive_file_extension}")
       end
 
       # Suffix of archive file
       # @return [String]
-      def archive_suffix
-        case Capistrano::NetStorage.archiver
-        when Capistrano::NetStorage::Archiver::Zip
-          'zip'
-        when Capistrano::NetStorage::Archiver::TarGzip
-          'tar.gz'
-        else
-          'archive'
-        end
+      def archive_file_extension
+        @archive_file_extension ||= executor_class(:archiver).file_extension
       end
     end
   end
