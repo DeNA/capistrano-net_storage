@@ -23,8 +23,8 @@ describe Capistrano::NetStorage::Config do
       expect(config.executor_class(:archiver)).to be Capistrano::NetStorage::Archiver::Zip
       expect(config.executor_class(:scm)).to be Capistrano::NetStorage::SCM::Git
       expect(config.executor_class(:bundler)).to be Capistrano::NetStorage::Bundler
-      expect { config.executor_class(:transport) }.to raise_error(Capistrano::NetStorage::Error, /You have to set :net_storage_transport/)
-      expect { config.executor_class(:no_such_type) }.to raise_error(RuntimeError, /Unknown type!/)
+      expect { config.executor_class(:transport) }.to raise_error(ArgumentError, /You have to `set/)
+      expect { config.executor_class(:no_such_type) }.to raise_error(ArgumentError, /Invalid type/)
 
       # Others
       expect(config.servers.map(&:hostname)).to eq %w(web1 db1)

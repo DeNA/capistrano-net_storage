@@ -1,32 +1,35 @@
 require 'pathname'
 
-require 'capistrano/net_storage/error'
 require 'capistrano/net_storage/bundler'
 require 'capistrano/net_storage/archiver/zip'
 require 'capistrano/net_storage/scm/git'
+require 'capistrano/net_storage/cleaner'
+require 'capistrano/net_storage/bundler'
 
 module Capistrano
   module NetStorage
     class Config
+      DEFAULT_EXECUTOR_CLASS = {
+        archiver: Capistrano::NetStorage::Archiver::Zip,
+        scm: Capistrano::NetStorage::SCM::Git,
+        cleaner: Capistrano::NetStorage::Cleaner,
+        bundler: Capistrano::NetStorage::Bundler,
+        transport: nil,
+      }
+
       def executor_class(type)
-        @executor_classes ||= {}
-        @executor_classes[type] ||= fetch(:"net_storage_#{type}")
-        @executor_classes[type] ||= begin
-          case type
-          when :archiver
-            Capistrano::NetStorage::Archiver::Zip
-          when :scm
-            Capistrano::NetStorage::SCM::Git
-          when :cleaner
-            Capistrano::NetStorage::Cleaner
-          when :bundler
-            Capistrano::NetStorage::Bundler
-          when :transport
-            msg = 'You have to set :net_storage_transport because no default transport class!'
-            raise Capistrano::NetStorage::Error, msg
-          else
-            raise "Unknown type! #{type}"
+        unless DEFAULT_EXECUTOR_CLASS.key?(type)
+          raise ArgumentError, "Invalid type specified: #{type.inspect}"
+        end
+
+        @executor_class ||= {}
+        @executor_class[type] ||= fetch(:"net_storage_#{type}") do
+          default = DEFAULT_EXECUTOR_CLASS[type]
+          unless default
+            raise ArgumentError, "You have to `set(:net_storage_#{type}, CustomClass)`"
           end
+
+          default
         end
       end
 
