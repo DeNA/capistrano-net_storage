@@ -39,7 +39,6 @@ namespace :net_storage do
   task :sync_config do
     config = Capistrano::NetStorage.config
     Capistrano::NetStorage.scm.sync_config
-    Capistrano::NetStorage.bundler.sync_config unless config.skip_bundle?
   end
   after 'net_storage:create_release', 'net_storage:sync_config'
 
@@ -111,15 +110,16 @@ namespace :net_storage do
 
     task :directories do
       config = Capistrano::NetStorage.config
-      dirs = [
-        config.local_base_path,
-        config.local_mirror_path,
-        config.local_releases_path,
-        config.local_archives_path,
-      ]
-      dirs << config.local_bundle_path unless config.skip_bundle?
+
       run_locally do
-        dirs.each { |dir| execute :mkdir, '-p', dir }
+        [
+          config.local_base_path,
+          config.local_mirror_path,
+          config.local_releases_path,
+          config.local_archives_path,
+        ].each do |path|
+          execute :mkdir, '-p', path
+        end
       end
     end
   end
@@ -145,4 +145,4 @@ namespace :net_storage do
   end
 end
 
-end
+end # end of prevent multiple loads

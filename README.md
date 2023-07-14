@@ -64,6 +64,7 @@ Set Capistrano variables by `set name, value`.
  `:net_storage_local_bundle_path` | `#{net_storage_local_base_path}/bundle` | Shared directory to install gems on deploy server
  `:net_storage_local_archives_path` | `#{net_storage_local_base_path}/archives` | Archive directories on deploy server
  `:net_storage_archives_path` | `#{deploy_to}/net_storage_archives` | Archive directories on application server
+ `:net_storage_multi_app_mode` | `false` | Deploy a repository with multiple Rails apps at the top directory
 
 ### Transport Plugins
 

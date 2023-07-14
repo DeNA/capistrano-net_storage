@@ -21,6 +21,12 @@ module Capistrano
         def extract
           raise NotImplementedError
         end
+
+        # file extension
+        # @abstract
+        def self.file_extension
+          'archive' # just for backward compatibility
+        end
       end
     end
   end

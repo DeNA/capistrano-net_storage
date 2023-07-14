@@ -8,30 +8,23 @@ module Capistrano
       end
 
       def archiver
-        load_executor(:archiver)
+        config.executor_class(:archiver).new
       end
 
       def transport
-        load_executor(:transport)
+        config.executor_class(:transport).new
       end
 
       def cleaner
-        load_executor(:cleaner)
+        config.executor_class(:cleaner).new
       end
 
       def bundler
-        load_executor(:bundler)
+        config.executor_class(:bundler).new
       end
 
       def scm
-        load_executor(:scm)
-      end
-
-      private
-
-      def load_executor(type)
-        @executors ||= {}
-        @executors[type] ||= config.executor_class(type).new
+        config.executor_class(:scm).new
       end
     end
   end

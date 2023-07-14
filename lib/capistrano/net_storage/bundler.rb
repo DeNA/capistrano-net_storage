@@ -7,63 +7,39 @@ module Capistrano
       include Capistrano::NetStorage::Utils
 
       def check
+        c = config # should be local variable
         run_locally do
           execute :which, 'bundle'
+          execute :mkdir, '-p', c.local_bundle_path
         end
       end
 
-      # Do bundle install locally. Installed gems are to be included to the release.
+      # bundle install locally. `.bundle/config` and installed gems are to be included in the release and archive.
       def install
-        c = config
+        c = config # should be local variable
         run_locally do
-          local_release_bundle_path = c.local_release_path.join('vendor', 'bundle')
-          execute :mkdir, '-p', local_release_bundle_path
-          execute :mkdir, '-p', "#{c.local_release_path}/.bundle"
-          # Copy shared gems to release bundle path beforehand to reuse installed previously
-          execute :rsync, '-a', "#{c.local_bundle_path}/", "#{local_release_bundle_path}/"
-
-          within c.local_release_path do
+          within c.local_release_app_path do
             ::Bundler.with_clean_env do
-              install_options = %W(
-                --gemfile #{c.local_release_path}/Gemfile --deployment --quiet
-                --path #{local_release_bundle_path} --without development test
-              )
-              execute :bundle, 'install', *install_options
+              install_path = Pathname.new('vendor/bundle') # must be a relative path for portability between local and remote
+              execute :mkdir, '-p', install_path
+
+              # Sync installed gems from shared directory to speed up installation
+              execute :rsync, '-a', '--delete', "#{c.local_bundle_path}/", install_path
+
+              # Always set config
+              execute :bundle, 'config', 'set', '--local', 'deployment', 'true'
+              execute :bundle, 'config', 'set', '--local', 'path', install_path
+              execute :bundle, 'config', 'set', '--local', 'without', 'development test'
+              execute :bundle, 'config', 'set', '--local', 'disable_shared_gems', 'true'
+
+              execute :bundle, 'install', '--quiet'
               execute :bundle, 'clean'
-              # Sync installed gems to shared directory to reuse them next time
-              rsync_options = %W(-a --delete #{local_release_bundle_path}/ #{c.local_bundle_path}/)
-              execute :rsync, *rsync_options
+
+              # Sync back to shared directory for the next release
+              execute :rsync, '-a', '--delete', "#{install_path}/", c.local_bundle_path
             end
           end
         end
-      end
-
-      # Create +.bundle/config+ at release path on remote servers
-      def sync_config
-        c = config
-
-        on c.servers, in: :groups, limit: c.max_parallels do
-          within release_path do
-            execute :mkdir, '-p', '.bundle'
-          end
-        end
-
-        run_locally do
-          execute :mkdir, '-p', "#{c.local_base_path}/.bundle"
-        end
-        bundle_config_path = "#{c.local_base_path}/.bundle/config"
-        File.open(bundle_config_path, 'w') do |file|
-          file.print(<<-EOS)
----
-BUNDLE_FROZEN: "1"
-BUNDLE_PATH: "#{release_path.join('vendor', 'bundle')}"
-BUNDLE_WITHOUT: "development:test"
-BUNDLE_DISABLE_SHARED_GEMS: "true"
-BUNDLE_BIN: "#{release_path.join('bin')}"
-EOS
-        end
-
-        upload_files([bundle_config_path], release_path.join('.bundle'))
       end
     end
   end
