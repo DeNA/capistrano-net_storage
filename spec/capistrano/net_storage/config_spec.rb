@@ -46,9 +46,11 @@ describe Capistrano::NetStorage::Config do
     end
 
     it 'Customized parameters' do
+      archiver_class = Struct.new(:file_extension).new('super.zip')
+
       env = Capistrano::Configuration.env
       {
-        net_storage_archiver: Object,
+        net_storage_archiver: archiver_class,
         net_storage_scm: Object,
         net_storage_bundler: Object,
         net_storage_transport: Object,
@@ -68,7 +70,7 @@ describe Capistrano::NetStorage::Config do
       }.each { |k, v| env.set k, v }
 
       # executor_class
-      expect(config.executor_class(:archiver)).to be Object
+      expect(config.executor_class(:archiver)).to be archiver_class
       expect(config.executor_class(:scm)).to be Object
       expect(config.executor_class(:bundler)).to be Object
       expect(config.executor_class(:transport)).to be Object
@@ -87,9 +89,9 @@ describe Capistrano::NetStorage::Config do
       expect(config.local_release_path.to_s).to eq "#{config.local_releases_path}/#{config.release_timestamp}"
       expect(config.local_bundle_path.to_s).to eq '/path/to/local_bundle'
       expect(config.local_archives_path.to_s).to eq '/path/to/local_archives'
-      expect(config.local_archive_path.to_s).to eq "#{config.local_archives_path}/#{config.release_timestamp}.zip"
+      expect(config.local_archive_path.to_s).to eq "#{config.local_archives_path}/#{config.release_timestamp}.super.zip"
       expect(config.archives_path.to_s).to eq '/path/to/archives'
-      expect(config.archive_path.to_s).to eq "#{config.archives_path}/#{config.release_timestamp}.zip"
+      expect(config.archive_path.to_s).to eq "#{config.archives_path}/#{config.release_timestamp}.super.zip"
     end
   end
 end
