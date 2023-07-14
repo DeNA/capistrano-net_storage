@@ -15,7 +15,7 @@ module Capistrano
       # bundle install locally. `.bundle/config` and installed gems are to be included in the release and archive.
       def install
         run_locally do
-          within config.local_release_path do
+          within config.local_release_app_path do
             ::Bundler.with_clean_env do
               install_path = Pathname.new('vendor/bundle') # must be a relative path for portability between local and remote
               execute :mkdir '-p', install_path
