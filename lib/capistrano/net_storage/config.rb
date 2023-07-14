@@ -48,22 +48,18 @@ module Capistrano
       # If +true+, skip to bundle gems bundled with target app.
       # Defaults to +true+
       def skip_bundle?
-        @has_checked_skip_bundle ||= begin
-          @skip_bundle = !fetch(:net_storage_with_bundle)
-          true
-        end
-        @skip_bundle
+        return @skip_bundle if instance_variable_defined? :@skip_bundle
+
+        @skip_bundle = !fetch(:net_storage_with_bundle, false) # just for backward compatibility
       end
 
       # If +true+, create archive ONLY when it's not found on remote storage.
       # Otherwise, create archive ALWAYS.
       # Defaults to +true+
       def archive_on_missing?
-        @has_checked_archive_on_missing ||= begin
-          @archive_on_missing = fetch(:net_storage_archive_on_missing, true)
-          true
-        end
-        @archive_on_missing
+        return @archive_on_missing if instance_variable_defined? :@archive_on_missing
+
+        @archive_on_missing = fetch(:net_storage_archive_on_missing, true)
       end
 
       # If +true+, use +rsync+ to sync config files.
