@@ -9,6 +9,7 @@ module Capistrano
       def check
         run_locally do
           execute :which, 'bundle'
+          execute :mkdir, '-p', config.local_bundle_path
         end
       end
 
