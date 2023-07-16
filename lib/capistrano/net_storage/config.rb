@@ -45,7 +45,7 @@ module Capistrano
       # Application configuration files to be deployed with
       # @return [Array<String, Pathname>]
       def config_files
-        fetch(:net_storage_config_files)
+        fetch(:net_storage_config_files, [])
       end
 
       # If +true+, skip to bundle gems bundled with target app.
