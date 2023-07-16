@@ -1,5 +1,6 @@
 [![Gem Version](https://badge.fury.io/rb/capistrano-net_storage.svg)](https://badge.fury.io/rb/capistrano-net_storage)
-[![Build Status](https://travis-ci.org/DeNADev/capistrano-net_storage.svg?branch=master)](https://travis-ci.org/DeNADev/capistrano-net_storage)
+[![Test](https://github.com/DeNADev/capistrano-net_storage/actions/workflows/test.yml/badge.svg)](https://github.com/DeNADev/capistrano-net_storage/actions/workflows/test.yml?query=branch%3Amaster)
+
 # Capistrano::NetStorage
 
 **Capistrano::NetStorage** is a [Capistrano](http://capistranorb.com/) plugin to deploy application
