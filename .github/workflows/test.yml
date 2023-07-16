@@ -8,8 +8,9 @@ on:
   pull_request:
 
 jobs:
-  build:
-    name: Test with Ruby ${{ matrix.ruby }}
+  test:
+    runs-on: ubuntu-latest
+    name: Ruby ${{ matrix.ruby }}
     strategy:
       matrix:
         ruby:
