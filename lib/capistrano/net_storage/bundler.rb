@@ -19,7 +19,7 @@ module Capistrano
         c = config # should be local variable
         run_locally do
           within c.local_release_app_path do
-            ::Bundler.with_clean_env do
+            ::Bundler.with_unbundled_env do
               install_path = Pathname.new('vendor/bundle') # must be a relative path for portability between local and remote
               execute :mkdir, '-p', install_path
 
