@@ -1,7 +1,7 @@
 require 'pathname'
 
 require 'capistrano/net_storage/bundler'
-require 'capistrano/net_storage/archiver/zip'
+require 'capistrano/net_storage/archiver/tar_gzip'
 require 'capistrano/net_storage/scm/git'
 require 'capistrano/net_storage/cleaner'
 require 'capistrano/net_storage/bundler'
@@ -10,7 +10,7 @@ module Capistrano
   module NetStorage
     class Config
       DEFAULT_EXECUTOR_CLASS = {
-        archiver: Capistrano::NetStorage::Archiver::Zip,
+        archiver: Capistrano::NetStorage::Archiver::TarGzip,
         scm: Capistrano::NetStorage::SCM::Git,
         cleaner: Capistrano::NetStorage::Cleaner,
         bundler: Capistrano::NetStorage::Bundler,
