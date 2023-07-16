@@ -1,4 +1,4 @@
-name: Ruby
+name: Test
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    name: Ruby ${{ matrix.ruby }}
+    name: Test with Ruby ${{ matrix.ruby }}
     strategy:
       matrix:
         ruby:
