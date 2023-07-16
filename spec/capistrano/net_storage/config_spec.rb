@@ -21,7 +21,7 @@ describe Capistrano::NetStorage::Config do
   describe 'Configuration params' do
     it 'Default parameters' do
       # executor_class
-      expect(config.executor_class(:archiver)).to be Capistrano::NetStorage::Archiver::Zip
+      expect(config.executor_class(:archiver)).to be Capistrano::NetStorage::Archiver::TarGzip
       expect(config.executor_class(:scm)).to be Capistrano::NetStorage::SCM::Git
       expect(config.executor_class(:bundler)).to be Capistrano::NetStorage::Bundler
       expect { config.executor_class(:transport) }.to raise_error(ArgumentError, /You have to `set/)
@@ -44,9 +44,9 @@ describe Capistrano::NetStorage::Config do
       expect(config.local_release_app_path.to_s).to eq "#{config.local_releases_path}/#{config.release_timestamp}"
       expect(config.local_bundle_path.to_s).to eq "#{config.local_base_path}/bundle"
       expect(config.local_archives_path.to_s).to eq "#{config.local_base_path}/archives"
-      expect(config.local_archive_path.to_s).to eq "#{config.local_archives_path}/#{config.release_timestamp}.zip"
+      expect(config.local_archive_path.to_s).to eq "#{config.local_archives_path}/#{config.release_timestamp}.tar.gz"
       expect(config.archives_path.to_s).to eq "#{config.deploy_path}/net_storage_archives"
-      expect(config.archive_path.to_s).to eq "#{config.archives_path}/#{config.release_timestamp}.zip"
+      expect(config.archive_path.to_s).to eq "#{config.archives_path}/#{config.release_timestamp}.tar.gz"
     end
 
     it 'Customized parameters' do
