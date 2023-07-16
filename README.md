@@ -49,7 +49,7 @@ Set Capistrano variables by `set name, value`.
  `:scm`  | `nil` | Set `:net_storage` for capistrano before v3.7
  `:branch` | `master` | Target branch of SCM to release
  `:keep_releases` | `5` | Numbers to keep released versions
- `:net_storage_archiver` | `Capistrano::NetStorage::Archiver::Zip` | Archiver class
+ `:net_storage_archiver` | `Capistrano::NetStorage::Archiver::TarGzip` | Archiver class
  `:net_storage_scm` | `Capistrano::NetStorage::SCM::Git` | Internal scm class for application repository
  `:net_storage_transport` | `nil` | Transport class for _remote storage_
  `:net_storage_archive_on_missing` | `true` | If `true`, create and upload archive only when target archive is missing on remote storage
