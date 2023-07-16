@@ -54,7 +54,7 @@ Set Capistrano variables by `set name, value`.
  `:net_storage_scm` | `Capistrano::NetStorage::SCM::Git` | Internal scm class for application repository
  `:net_storage_transport` | `nil` | Transport class for _remote storage_
  `:net_storage_archive_on_missing` | `true` | If `true`, create and upload archive only when target archive is missing on remote storage
- `:net_storage_config_files` | `nil` | Files to sync `config/` directory on target servers' application directory
+ `:net_storage_config_files` | `[]` | Files to sync `config/` directory on target servers' application directory
  `:net_storage_max_parallels` | number of servers | Max concurrency for remote tasks
  `:net_storage_rsync_options` | `#{ssh_options}` | SSH options for rsync command to sync configs
  `:net_storage_upload_files_by_rsync` | `false` | Use rsync(1) to deploy config files

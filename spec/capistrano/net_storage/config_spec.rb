@@ -30,7 +30,7 @@ describe Capistrano::NetStorage::Config do
       # Others
       expect(config.servers.map(&:hostname)).to eq %w(web1 db1)
       expect(config.max_parallels).to eq 2
-      expect(config.config_files).to be nil
+      expect(config.config_files).to eq []
       expect(config.skip_bundle?).to be true
       expect(config.archive_on_missing?).to be true
       expect(config.upload_files_by_rsync?).to be false

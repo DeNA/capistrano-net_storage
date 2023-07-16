@@ -40,7 +40,7 @@ module Capistrano
 
         # Copy local config files to servers
         def sync_config
-          return unless config.config_files&.any?
+          return if config.config_files.empty?
 
           upload_files(config.config_files, config.release_app_path.join('config'))
         end
