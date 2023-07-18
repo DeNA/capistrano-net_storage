@@ -12,6 +12,8 @@ describe Capistrano::NetStorage::Config do
     env.server 'db1',  role: %w(db), active: true
     env.role :web, %w(web1 web2)
     env.role :db,  %w(db1)
+
+    invoke! 'load:defaults'
   end
 
   after do
