@@ -1,36 +1,36 @@
 require 'pathname'
 
-require 'capistrano/net_storage/bundler'
 require 'capistrano/net_storage/archiver/tar_gzip'
 require 'capistrano/net_storage/scm/git'
 require 'capistrano/net_storage/cleaner'
-require 'capistrano/net_storage/bundler'
+require 'capistrano/net_storage/bundler/default'
+require 'capistrano/net_storage/bundler/null'
 
 module Capistrano
   module NetStorage
     class Config
-      DEFAULT_EXECUTOR_CLASS = {
-        archiver: Capistrano::NetStorage::Archiver::TarGzip,
-        scm: Capistrano::NetStorage::SCM::Git,
-        cleaner: Capistrano::NetStorage::Cleaner,
-        bundler: Capistrano::NetStorage::Bundler,
-        transport: nil,
-      }
       DEFAULT_LOCAL_BASE_PATH = Pathname.new("#{Dir.pwd}/.local_repo")
 
-      def executor_class(type)
-        unless DEFAULT_EXECUTOR_CLASS.key?(type)
-          raise ArgumentError, "Invalid type specified: #{type.inspect}"
-        end
+      def archiver_class
+        fetch(:net_storage_archiver, Capistrano::NetStorage::Archiver::TarGzip)
+      end
 
-        fetch(:"net_storage_#{type}") do
-          default = DEFAULT_EXECUTOR_CLASS[type]
-          unless default
-            raise ArgumentError, "You have to `set(:net_storage_#{type}, CustomClass)`"
-          end
+      def scm_class
+        fetch(:net_storage_scm, Capistrano::NetStorage::SCM::Git)
+      end
 
-          default
-        end
+      def cleaner_class
+        fetch(:net_storage_cleaner, Capistrano::NetStorage::Cleaner)
+      end
+
+      def bundler_class
+        return Capistrano::NetStorage::Bundler::Null if fetch(:net_storage_skip_bundle)
+
+        fetch(:net_storage_bundler, Capistrano::NetStorage::Bundler::Default)
+      end
+
+      def transport_class
+        fetch(:net_storage_transport) or raise ArgumentError, 'You have to `set(:net_storage_transport, CustomClass)`'
       end
 
       # Servers to deploy
@@ -152,7 +152,7 @@ module Capistrano
       # Suffix of archive file
       # @return [String]
       def archive_file_extension
-        executor_class(:archiver).file_extension
+        archiver_class.file_extension
       end
 
       alias archive_suffix archive_file_extension # backward compatibility

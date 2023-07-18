@@ -8,23 +8,23 @@ module Capistrano
       end
 
       def archiver
-        config.executor_class(:archiver).new
+        config.archiver_class.new
       end
 
       def transport
-        config.executor_class(:transport).new
+        config.transport_class.new
       end
 
       def cleaner
-        config.executor_class(:cleaner).new
+        config.cleaner_class.new
       end
 
       def bundler
-        config.executor_class(:bundler).new
+        config.bundler_class.new
       end
 
       def scm
-        config.executor_class(:scm).new
+        config.scm_class.new
       end
     end
   end

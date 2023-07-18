@@ -20,12 +20,11 @@ describe Capistrano::NetStorage::Config do
 
   describe 'Configuration params' do
     it 'Default parameters' do
-      # executor_class
-      expect(config.executor_class(:archiver)).to be Capistrano::NetStorage::Archiver::TarGzip
-      expect(config.executor_class(:scm)).to be Capistrano::NetStorage::SCM::Git
-      expect(config.executor_class(:bundler)).to be Capistrano::NetStorage::Bundler
-      expect { config.executor_class(:transport) }.to raise_error(ArgumentError, /You have to `set/)
-      expect { config.executor_class(:no_such_type) }.to raise_error(ArgumentError, /Invalid type/)
+      # class for delegation
+      expect(config.archiver_class).to be Capistrano::NetStorage::Archiver::TarGzip
+      expect(config.scm_class).to be Capistrano::NetStorage::SCM::Git
+      expect(config.bundler_class).to be Capistrano::NetStorage::Bundler::Default
+      expect { config.transport_class }.to raise_error(ArgumentError, /You have to `set/)
 
       # Others
       expect(config.servers.map(&:hostname)).to eq %w(web1 db1)
@@ -50,10 +49,8 @@ describe Capistrano::NetStorage::Config do
     end
 
     it 'Customized parameters' do
-      archiver_class = Struct.new(:file_extension).new('super.zip')
-
       {
-        net_storage_archiver: archiver_class,
+        net_storage_archiver: Capistrano::NetStorage::Archiver::Zip,
         net_storage_scm: Object,
         net_storage_bundler: Object,
         net_storage_transport: Object,
@@ -73,11 +70,11 @@ describe Capistrano::NetStorage::Config do
         net_storage_archives_path: '/path/to/archives',
       }.each { |k, v| env.set k, v }
 
-      # executor_class
-      expect(config.executor_class(:archiver)).to be archiver_class
-      expect(config.executor_class(:scm)).to be Object
-      expect(config.executor_class(:bundler)).to be Object
-      expect(config.executor_class(:transport)).to be Object
+      # class for delegation
+      expect(config.archiver_class).to be Capistrano::NetStorage::Archiver::Zip
+      expect(config.scm_class).to be Object
+      expect(config.bundler_class).to be Object
+      expect(config.transport_class).to be Object
 
       # Others
       expect(config.servers.map(&:hostname)).to eq %w(web1 web2)
@@ -96,9 +93,9 @@ describe Capistrano::NetStorage::Config do
       expect(config.local_release_app_path.to_s).to eq "#{config.local_releases_path}/#{config.release_timestamp}/api"
       expect(config.local_bundle_path.to_s).to eq '/path/to/local_bundle'
       expect(config.local_archives_path.to_s).to eq '/path/to/local_archives'
-      expect(config.local_archive_path.to_s).to eq "#{config.local_archives_path}/#{config.release_timestamp}.super.zip"
+      expect(config.local_archive_path.to_s).to eq "#{config.local_archives_path}/#{config.release_timestamp}.zip"
       expect(config.archives_path.to_s).to eq '/path/to/archives'
-      expect(config.archive_path.to_s).to eq "#{config.archives_path}/#{config.release_timestamp}.super.zip"
+      expect(config.archive_path.to_s).to eq "#{config.archives_path}/#{config.release_timestamp}.zip"
     end
   end
 end
