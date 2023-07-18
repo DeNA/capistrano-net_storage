@@ -24,7 +24,7 @@ module Capistrano
       end
 
       def bundler_class
-        return Capistrano::NetStorage::Bundler::Null if fetch(:net_storage_skip_bundle)
+        return Capistrano::NetStorage::Bundler::Null if skip_bundle?
 
         fetch(:net_storage_bundler, Capistrano::NetStorage::Bundler::Default)
       end
@@ -49,9 +49,9 @@ module Capistrano
       end
 
       # If +true+, skip to bundle gems bundled with target app.
-      # Defaults to +true+
+      # Defaults to +false+
       def skip_bundle?
-        !fetch(:net_storage_with_bundle, false) # just for backward compatibility
+        fetch(:net_storage_skip_bundle, false)
       end
 
       # If +true+, create archive ONLY when it's not found on remote storage.

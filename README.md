@@ -58,7 +58,7 @@ Set Capistrano variables by `set name, value`.
  `:net_storage_max_parallels` | number of servers | Max concurrency for remote tasks
  `:net_storage_rsync_options` | `#{ssh_options}` | SSH options for rsync command to sync configs
  `:net_storage_upload_files_by_rsync` | `false` | Use rsync(1) to deploy config files
- `:net_storage_with_bundle` | `false` | Do `bundle install` when creating archive
+ `:net_storage_skip_bundle` | `false` | Skip `bundle install` when creating archive
  `:net_storage_local_base_path` | `.local_repo` | Base directory on deploy server
  `:net_storage_local_mirror_path` | `#{net_storage_local_base_path}/mirror` | Path to clone repository on deploy server
  `:net_storage_local_releases_path` | `#{net_storage_local_base_path}/releases` | Path to keep release directories on deploy server

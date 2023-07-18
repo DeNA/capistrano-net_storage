@@ -30,7 +30,7 @@ describe Capistrano::NetStorage::Config do
       expect(config.servers.map(&:hostname)).to eq %w(web1 db1)
       expect(config.max_parallels).to eq 2
       expect(config.config_files).to eq []
-      expect(config.skip_bundle?).to be true
+      expect(config.skip_bundle?).to be false
       expect(config.archive_on_missing?).to be true
       expect(config.upload_files_by_rsync?).to be false
       expect(config.rsync_options).to eq({})
@@ -57,7 +57,7 @@ describe Capistrano::NetStorage::Config do
         net_storage_servers: -> { env.roles_for([:web]) },
         net_storage_max_parallels: 5,
         net_storage_config_files: %w(app.yml db.yml).map { |f| "/path/to/config/#{f}" },
-        net_storage_with_bundle: true,
+        net_storage_skip_bundle: true,
         net_storage_archive_on_missing: false,
         net_storage_upload_files_by_rsync: true,
         net_storage_rsync_options: { user: 'bob' },
@@ -73,14 +73,14 @@ describe Capistrano::NetStorage::Config do
       # class for delegation
       expect(config.archiver_class).to be Capistrano::NetStorage::Archiver::Zip
       expect(config.scm_class).to be Object
-      expect(config.bundler_class).to be Object
+      expect(config.bundler_class).to be Capistrano::NetStorage::Bundler::Null # Because of net_storage_skip_bundle: true
       expect(config.transport_class).to be Object
 
       # Others
       expect(config.servers.map(&:hostname)).to eq %w(web1 web2)
       expect(config.max_parallels).to eq 5
       expect(config.config_files).to eq %w(app.yml db.yml).map { |f| "/path/to/config/#{f}" }
-      expect(config.skip_bundle?).to be false
+      expect(config.skip_bundle?).to be true
       expect(config.archive_on_missing?).to be false
       expect(config.upload_files_by_rsync?).to be true
       expect(config.rsync_options).to eq(user: 'bob')
