@@ -22,7 +22,7 @@ module Capistrano
         set_if_empty :net_storage_upload_files_by_rsync, true
         set_if_empty :net_storage_rsync_options, fetch(:ssh_options, {})
 
-        set_if_empty :net_storage_max_parallels, release_roles(:all).size
+        set_if_empty :net_storage_max_parallels, 1000
         set_if_empty :net_storage_reuse_archive, true
 
         set_if_empty :net_storage_local_base_path, Pathname.new("#{Dir.pwd}/.local_net_storage")
