@@ -11,7 +11,7 @@ class Capistrano::NetStorage::SCM::Git < Capistrano::NetStorage::SCM::Base
   def clone
     c = config
     run_locally do
-      if File.exist?("#{c.local_mirror_path}/HEAD")
+      if test "[ -f #{c.local_mirror_path}/HEAD ]"
         info t(:mirror_exists, at: c.local_mirror_path)
       else
         execute :git, :clone, '--mirror', repo_url, c.local_mirror_path
@@ -29,7 +29,6 @@ class Capistrano::NetStorage::SCM::Git < Capistrano::NetStorage::SCM::Base
   end
 
   def set_current_revision
-    return if fetch(:current_revision)
     c = config
     run_locally do
       within c.local_mirror_path do
