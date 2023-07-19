@@ -78,6 +78,8 @@ If you wish a plugin for other types of _remote storage_, you can develop it. It
 
 ## Usage
 
+Below is the typical usage of Capistrano::NetStorage.
+
 Edit Capfile:
 
 ```ruby
@@ -88,28 +90,18 @@ require 'capistrano/setup'
 require 'capistrano/deploy'
 
 # Includes tasks from other gems included in your Gemfile
-if Gem::Version.new(Capistrano::VERSION) < Gem::Version.new('3.7.0')
-  require 'capistrano/net_storage'
-else
-  require "capistrano/net_storage/plugin"
-  install_plugin Capistrano::NetStorage::Plugin
-end
+require "capistrano/net_storage/plugin"
+install_plugin Capistrano::NetStorage::Plugin
 
 # Load transport plugin for Capistrano::NetStorage
-# require 'capistrano/net_storage/s3'
+require 'capistrano/net_storage/s3' # or your_custom_transport
 ```
 
 Edit your `config/deploy.rb`:
 
 ```ruby
-if Gem::Version.new(Capistrano::VERSION) < Gem::Version.new('3.7.0')
-  set :scm, :net_storage
-end
-set :net_storage_transport, Your::TransportPluginModule
-# set :net_storage_transport, Capistrano::NetStorage::S3::Transport # w/ capistrano-net_storage-s3
-# set :net_storage_config_files, [your_config_files]
-# set :net_storage_with_bundle, true
-# set :net_storage_archiver, Capistrano::NetStorage::Archiver::TarGzip
+set :net_storage_transport, Capistrano::NetStorage::S3::Transport # or YourCustomTransport class
+set :net_storage_config_files, Pathname('path/to/config').glob('*.yml')
 ```
 
 ## Example
