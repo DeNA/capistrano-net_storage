@@ -36,7 +36,6 @@ module Capistrano
       def register_hooks
         after  'deploy:new_release_path', 'net_storage:create_release'
         before 'deploy:check', 'net_storage:check'
-        before 'deploy:set_current_revision', 'net_storage:set_current_revision'
         after 'deploy:cleanup', 'net_storage:cleanup'
       end
     end

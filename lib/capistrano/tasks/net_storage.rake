@@ -19,16 +19,14 @@ namespace :net_storage do
     end
   end
 
-  task :clone do
+  task :prepare_mirror_repository do
     Capistrano::NetStorage.scm.clone
-  end
-
-  task update: 'net_storage:clone' do
     Capistrano::NetStorage.scm.update
+    Capistrano::NetStorage.scm.set_current_revision # :current_revision is set here, not in net_storage:set_current_revision
   end
 
   desc 'Create and deploy archives via remove storage'
-  task create_release: :'net_storage:update' do
+  task create_release: :'net_storage:prepare_mirror_repository' do
     config = Capistrano::NetStorage.config
 
     if !config.reuse_archive? || !Capistrano::NetStorage.transport.archive_exists?
@@ -41,11 +39,6 @@ namespace :net_storage do
     Capistrano::NetStorage.archiver.extract
 
     Capistrano::NetStorage.scm.sync_config
-  end
-
-  desc 'Set the revision to be deployed'
-  task set_current_revision: :'net_storage:scm:update' do
-    Capistrano::NetStorage.scm.set_current_revision
   end
 
   desc 'Clean up old release directories on local'
