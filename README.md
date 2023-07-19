@@ -45,26 +45,23 @@ Or install it yourself as:
 
 Set Capistrano variables by `set name, value`.
 
+You can consult configuration of Capistrano itself at https://capistranorb.com/documentation/getting-started/configuration/
+
+Configurations of Capistrano::NetStorage are as follows:
+
  Name | Default | Description
 ------|---------|------------
- `:scm`  | `nil` | Set `:net_storage` for capistrano before v3.7
- `:branch` | `master` | Target branch of SCM to release
- `:keep_releases` | `5` | Numbers to keep released versions
+ `:net_storage_transport` | NO DEFAULT | Transport class for _remote storage_ e.g. `Capistrano::NetStorage::S3`
  `:net_storage_archiver` | `Capistrano::NetStorage::Archiver::TarGzip` | Archiver class
  `:net_storage_scm` | `Capistrano::NetStorage::SCM::Git` | Internal scm class for application repository
- `:net_storage_transport` | `nil` | Transport class for _remote storage_
- `:net_storage_archive_on_missing` | `true` | If `true`, create and upload archive only when target archive is missing on remote storage
  `:net_storage_config_files` | `[]` | Files to sync `config/` directory on target servers' application directory
- `:net_storage_max_parallels` | number of servers | Max concurrency for remote tasks
+ `:net_storage_upload_files_by_rsync` | `true` | Use rsync(1) to deploy config files
  `:net_storage_rsync_options` | `#{ssh_options}` | SSH options for rsync command to sync configs
- `:net_storage_upload_files_by_rsync` | `false` | Use rsync(1) to deploy config files
- `:net_storage_skip_bundle` | `false` | Skip `bundle install` when creating archive
+ `:net_storage_max_parallels` | `release_roles(:all).size` | Max concurrency for remote tasks
+ `:net_storage_reuse_archive` | `true` | If `true`, it reuses archive with the same commit hash at remote storage and uploads archives only when it does not exist.
  `:net_storage_local_base_path` | `.local_repo` | Base directory on deploy server
- `:net_storage_local_mirror_path` | `#{net_storage_local_base_path}/mirror` | Path to clone repository on deploy server
- `:net_storage_local_releases_path` | `#{net_storage_local_base_path}/releases` | Path to keep release directories on deploy server
- `:net_storage_local_bundle_path` | `#{net_storage_local_base_path}/bundle` | Shared directory to install gems on deploy server
- `:net_storage_local_archives_path` | `#{net_storage_local_base_path}/archives` | Archive directories on deploy server
  `:net_storage_archives_path` | `#{deploy_to}/net_storage_archives` | Archive directories on application server
+ `:net_storage_skip_bundle` | `false` | Skip `bundle install` when creating archive
  `:net_storage_multi_app_mode` | `false` | Deploy a repository with multiple Rails apps at the top directory
 
 ### Transport Plugins

@@ -1,7 +1,5 @@
 require 'pathname'
 
-require 'capistrano/net_storage/archiver/tar_gzip'
-require 'capistrano/net_storage/scm/git'
 require 'capistrano/net_storage/cleaner'
 require 'capistrano/net_storage/bundler/default'
 require 'capistrano/net_storage/bundler/null'
@@ -9,126 +7,123 @@ require 'capistrano/net_storage/bundler/null'
 module Capistrano
   module NetStorage
     class Config
-      DEFAULT_LOCAL_BASE_PATH = Pathname.new("#{Dir.pwd}/.local_repo")
+
+      # Settings for delegate classes
+
+      def transport_class
+        fetch(:net_storage_transport)
+      end
 
       def archiver_class
-        fetch(:net_storage_archiver, Capistrano::NetStorage::Archiver::TarGzip)
+        fetch(:net_storage_archiver)
       end
 
       def scm_class
-        fetch(:net_storage_scm, Capistrano::NetStorage::SCM::Git)
+        fetch(:net_storage_scm)
       end
 
       def cleaner_class
-        fetch(:net_storage_cleaner, Capistrano::NetStorage::Cleaner)
+        Capistrano::NetStorage::Cleaner
       end
 
       def bundler_class
-        return Capistrano::NetStorage::Bundler::Null if skip_bundle?
-
-        fetch(:net_storage_bundler, Capistrano::NetStorage::Bundler::Default)
+        if skip_bundle?
+          Capistrano::NetStorage::Bundler::Null
+        else
+          Capistrano::NetStorage::Bundler::Default
+        end
       end
 
-      def transport_class
-        fetch(:net_storage_transport) or raise ArgumentError, 'You have to `set(:net_storage_transport, CustomClass)`'
+      # Settings for syncing config
+
+      def config_files
+        fetch(:net_storage_config_files)
       end
 
-      # Servers to deploy
-      def servers
-        fetch(:net_storage_servers, -> { release_roles(:all) })
+      def upload_files_by_rsync?
+        fetch(:net_storage_upload_files_by_rsync)
       end
+
+      def rsync_options
+        fetch(:net_storage_rsync_options)
+      end
+
+      # Settings for tuning performance
 
       def max_parallels
-        fetch(:net_storage_max_parallels, servers.size)
+        fetch(:net_storage_max_parallels)
       end
 
-      # Application configuration files to be deployed with
-      # @return [Array<String, Pathname>]
-      def config_files
-        fetch(:net_storage_config_files, [])
+      def reuse_archive?
+        fetch(:net_storage_reuse_archive)
       end
 
-      # If +true+, skip to bundle gems bundled with target app.
-      # Defaults to +false+
+      # Settings for behavioral changes
+
       def skip_bundle?
-        fetch(:net_storage_skip_bundle, false)
+        fetch(:net_storage_skip_bundle)
       end
 
-      # If +true+, create archive ONLY when it's not found on remote storage.
-      # Otherwise, create archive ALWAYS.
-      # Defaults to +true+
-      def archive_on_missing?
-        fetch(:net_storage_archive_on_missing, true)
-      end
-
-      # If +true+, use +rsync+ to sync config files.
-      # Otherwise, use +upload!+ by sshkit.
-      # Defaults to +false+
-      # @see #rsync_options
-      def upload_files_by_rsync?
-        fetch(:net_storage_upload_files_by_rsync, false)
-      end
-
-      # You can set +:user+, +:keys+, +:port+ as ssh options for +rsync+ command to sync configs
-      # when +:net_storage_upload_files_by_rsync+ is set +true+.
-      # @see #upload_files_by_rsync?
-      def rsync_options
-        fetch(:net_storage_rsync_options, fetch(:ssh_options, {}))
-      end
-
-      # If your repository consists of multiple Rails apps, you can enable this for seamless deployment
       def multi_app_mode?
-        fetch(:net_storage_multi_app_mode, false)
+        fetch(:net_storage_multi_app_mode)
       end
 
-      #
       # Path settings
-      #
 
       # Path to application of remote release_path
+      # @return [Pathname]
       def release_app_path
-        multi_app_mode? ? Pathname.new(release_path).join(fetch(:application)) : Pathname.new(release_path)
+        if multi_app_mode?
+          release_path.join(fetch(:application))
+        else
+          release_path
+        end
       end
 
-      # Path of base directory on local
+      # Path to base directory on local
       # @return [Pathname]
       def local_base_path
-        Pathname.new(fetch(:net_storage_local_base_path, DEFAULT_LOCAL_BASE_PATH))
+        Pathname.new(fetch(:net_storage_local_base_path))
       end
 
-      # Path to clone repository on local
+      # Path to a mirror repository on local
       # @return [Pathname]
       def local_mirror_path
-        Pathname.new(fetch(:net_storage_local_mirror_path, local_base_path.join('mirror')))
+        local_base_path.join('mirror')
       end
 
       # Path to keep release directories on local
       # @return [Pathname]
       def local_releases_path
-        Pathname.new(fetch(:net_storage_local_releases_path, local_base_path.join('releases')))
+        local_base_path.join('releases')
       end
 
-      # Path to take a snapshot of repository for release on local
+      # Path to local release directory, where a release is to be prepared
       # @return [Pathname]
       def local_release_path
         local_releases_path.join(release_timestamp)
       end
 
       # Path to application of local release_path
+      # @return [Pathname]
       def local_release_app_path
-        multi_app_mode? ? local_release_path.join(fetch(:application)) : local_release_path
+        if multi_app_mode?
+          local_release_path.join(fetch(:application))
+        else
+          local_release_path
+        end
       end
 
-      # Shared directory to install gems on local
+      # Shared cache directory to speed up installing gems on local
       # @return [Pathname]
       def local_bundle_path
-        Pathname.new(fetch(:net_storage_local_bundle_path, local_base_path.join('bundle')))
+        local_base_path.join('bundle')
       end
 
       # Path of archive directories on local
       # @return [Pathname]
       def local_archives_path
-        Pathname.new(fetch(:net_storage_local_archives_path, local_base_path.join('archives')))
+        local_base_path.join('archives')
       end
 
       # Destination path to archive application on local
@@ -140,7 +135,7 @@ module Capistrano
       # Path of archive directories on remote servers
       # @return [Pathname]
       def archives_path
-        Pathname.new(fetch(:net_storage_archives_path, deploy_path.join('net_storage_archives')))
+        Pathname.new(fetch(:net_storage_archives_path))
       end
 
       # Path of archive file to be downloaded on remote servers
