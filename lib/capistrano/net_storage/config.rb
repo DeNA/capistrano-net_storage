@@ -150,7 +150,19 @@ module Capistrano
         archiver_class.file_extension
       end
 
-      alias archive_suffix archive_file_extension # backward compatibility
+      def archive_suffix
+        warn <<~WARN
+          ######### DEPRECATION WARNING #########
+
+          `Capistrano::NetStorage.config.archive_suffix` is no longer available
+
+          Use following method instead.
+          `Capistrano::NetStorage.config.archive_file_extension`
+
+        WARN
+
+        archive_file_extension
+      end
     end
   end
 end
