@@ -1,6 +1,6 @@
 # SEE: https://github.com/capistrano/capistrano/blob/31e142d56f8d894f28404fb225dcdbe7539bda18/lib/capistrano/scm/tasks/git.rake
 namespace :net_storage do
-  desc 'Check '
+  desc 'Check prerequisites and prepare directories'
   task :check do
     Capistrano::NetStorage.transport.check
     Capistrano::NetStorage.archiver.check
