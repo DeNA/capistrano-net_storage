@@ -6,6 +6,11 @@ module Capistrano
     class Cleaner
       include Capistrano::NetStorage::Utils
 
+      # Check for prerequisites.
+      # Same interface to delegated class
+      def check
+      end
+
       # Clean up old release directories on local.
       # Assumes they are under +config.local_releases_path+
       # @see Capistrano::NetStorage::Config#local_releases_path

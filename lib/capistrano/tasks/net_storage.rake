@@ -6,6 +6,7 @@ namespace :net_storage do
     Capistrano::NetStorage.archiver.check
     Capistrano::NetStorage.scm.check
     Capistrano::NetStorage.bundler.check
+    Capistrano::NetStorage.cleaner.check
 
     config = Capistrano::NetStorage.config
     run_locally do
