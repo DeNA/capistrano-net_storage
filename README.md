@@ -101,6 +101,23 @@ set :net_storage_transport, Capistrano::NetStorage::S3::Transport # or YourCusto
 set :net_storage_config_files, Pathname('path/to/config').glob('*.yml')
 ```
 
+When you want to further prepare the release before deployment, you can write it as follows:
+
+```ruby
+namespace :your_namespace do
+  task :prepare_archive do
+    run_locally do
+      within Capistrano::NetStorage.config.local_release_app_path do
+        # The resultant artifacts are to be archived with other files
+        execute :bundle, 'exec', 'rake', 'build_in_memory_cache_bundle'
+      end
+    end
+  end
+end
+
+after 'net_storage:prepare_archive', 'your_namespace:prepare_archive'
+```
+
 ## Example
 
 You can see typical usage of this library by

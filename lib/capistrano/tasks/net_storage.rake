@@ -32,8 +32,7 @@ namespace :net_storage do
     config = Capistrano::NetStorage.config
 
     if !config.reuse_archive? || !Capistrano::NetStorage.transport.archive_exists?
-      Capistrano::NetStorage.scm.prepare_archive
-      Capistrano::NetStorage.bundler.install
+      invoke 'net_storage:prepare_archive'
       Capistrano::NetStorage.archiver.archive
       Capistrano::NetStorage.transport.upload
     end
@@ -55,5 +54,11 @@ namespace :net_storage do
     Capistrano::NetStorage.cleaner.cleanup_local_archives
     Capistrano::NetStorage.cleaner.cleanup_archives
     Capistrano::NetStorage.transport.cleanup
+  end
+
+  desc 'Prepare archive (You can hook your own preparation after this)'
+  task :prepare_archive do
+    Capistrano::NetStorage.scm.prepare_archive
+    Capistrano::NetStorage.bundler.install
   end
 end
