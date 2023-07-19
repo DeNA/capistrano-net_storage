@@ -63,7 +63,7 @@ module Capistrano
       # @see Capistrano::NetStorage::Config#archives_path
       def cleanup_archives
         c = config
-        on c.servers, in: :groups, limit: c.max_parallels do |host|
+        on release_roles :all, in: :groups, limit: c.max_parallels do |host|
           contents = capture(:ls, '-x', c.archives_path).split
           archives, invalid = contents.partition { |e| /^\d{14}\.#{Regexp.escape(c.archive_suffix)}$/ =~ e }
 

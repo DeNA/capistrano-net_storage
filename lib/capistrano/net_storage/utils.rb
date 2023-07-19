@@ -14,14 +14,13 @@ module Capistrano
       # @param dest_dir [String, Pathname] Destination directory on remote to copy local files into
       def upload_files(files, dest_dir)
         c = config
-        hosts = ::Capistrano::Configuration.env.filter(c.servers)
 
         # FIXME: This is a very workaround to architectural issue. Do not copy.
         build_rsh_option = -> (host) {
           build_ssh_command(host)
         }
 
-        on hosts, in: :groups, limit: c.max_parallels do |host|
+        on release_roles :all, in: :groups, limit: c.max_parallels do |host|
           if c.upload_files_by_rsync?
             rsh_option = build_rsh_option.call(host)
             run_locally do
