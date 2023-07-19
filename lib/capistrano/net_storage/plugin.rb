@@ -11,10 +11,7 @@ module Capistrano
     class Plugin < ::Capistrano::SCM::Plugin
       # See README.md for details of settings
       def set_defaults
-        unless fetch(:net_storage_transport)
-          raise ArgumentError, 'You have to `set(:net_storage_transport, Capistrano::NetStorage::S3)` # or your custom class'
-        end
-
+        set_if_empty :net_storage_transport, -> { raise ArgumentError, 'You have to `set(:net_storage_transport, Capistrano::NetStorage::S3)` # or your custom class' }
         set_if_empty :net_storage_archiver, Capistrano::NetStorage::Archiver::TarGzip
         set_if_empty :net_storage_scm, Capistrano::NetStorage::SCM::Git
 
