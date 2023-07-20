@@ -26,7 +26,7 @@ module Capistrano
           build_ssh_command(host)
         }
 
-        on release_roles :all, in: :groups, limit: MAX_PARALLEL_TO_UPLOAD do |host|
+        on release_roles(:all), in: :groups, limit: MAX_PARALLEL_TO_UPLOAD do |host|
           if c.upload_files_by_rsync?
             rsh_option = build_rsh_option.call(host)
             run_locally do
