@@ -1,4 +1,4 @@
-require 'capistrano/net_storage/base'
+require 'capistrano/net_storage'
 
 module Capistrano
   module NetStorage

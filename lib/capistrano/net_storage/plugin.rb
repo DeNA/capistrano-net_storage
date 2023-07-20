@@ -1,7 +1,6 @@
 require 'pathname'
 
 require 'capistrano/scm/plugin'
-require 'capistrano/net_storage'
 
 require 'capistrano/net_storage/archiver/tar_gzip'
 require 'capistrano/net_storage/scm/git'
@@ -41,3 +40,11 @@ module Capistrano
     end
   end
 end
+
+# initialization code to access global settings via Capistrano::NetStorage
+
+require 'capistrano/net_storage'
+require 'capistrano/net_storage/config'
+
+config = Capistrano::NetStorage::Config.new
+Capistrano::NetStorage.setup!(config: Capistrano::NetStorage::Config.new)

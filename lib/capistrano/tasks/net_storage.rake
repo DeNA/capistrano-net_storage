@@ -25,6 +25,12 @@ namespace :net_storage do
     Capistrano::NetStorage.scm.set_current_revision # :current_revision is set here, not in net_storage:set_current_revision
   end
 
+  desc 'Prepare archive (You can hook your own preparation after this)'
+  task :prepare_archive do
+    Capistrano::NetStorage.scm.prepare_archive
+    Capistrano::NetStorage.bundler.install
+  end
+
   desc 'Create and deploy archives via remove storage'
   task create_release: :'net_storage:prepare_mirror_repository' do
     config = Capistrano::NetStorage.config
@@ -47,11 +53,5 @@ namespace :net_storage do
     Capistrano::NetStorage.cleaner.cleanup_local_archives
     Capistrano::NetStorage.cleaner.cleanup_archives
     Capistrano::NetStorage.transport.cleanup
-  end
-
-  desc 'Prepare archive (You can hook your own preparation after this)'
-  task :prepare_archive do
-    Capistrano::NetStorage.scm.prepare_archive
-    Capistrano::NetStorage.bundler.install
   end
 end
