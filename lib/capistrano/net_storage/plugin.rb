@@ -16,13 +16,13 @@ module Capistrano
 
         set_if_empty :net_storage_config_files, []
         set_if_empty :net_storage_upload_files_by_rsync, true
-        set_if_empty :net_storage_rsync_options, fetch(:ssh_options, {})
+        set_if_empty :net_storage_rsync_options, -> { fetch(:ssh_options, {}) }
 
         set_if_empty :net_storage_max_parallels, 1000
         set_if_empty :net_storage_reuse_archive, true
 
         set_if_empty :net_storage_local_base_path, Pathname.new("#{Dir.pwd}/.local_net_storage")
-        set_if_empty :net_storage_archives_path, deploy_path.join('net_storage_archives')
+        set_if_empty :net_storage_archives_path, -> { deploy_path.join('net_storage_archives') }
 
         set_if_empty :net_storage_skip_bundle, false
         set_if_empty :net_storage_multi_app_mode, false
