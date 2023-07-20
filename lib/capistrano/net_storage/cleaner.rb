@@ -45,7 +45,7 @@ module Capistrano
         c = config
         run_locally do
           contents = capture(:ls, '-x', c.local_archives_path).split
-          archives, invalid = contents.partition { |e| /^\d{14}\.#{Regexp.escape(c.archive_suffix)}$/ =~ e }
+          archives, invalid = contents.partition { |e| /^\d{14}\.#{Regexp.escape(c.archive_file_extension)}$/ =~ e }
 
           if invalid.any?
             warn "Invalid contents in #{c.local_archives_path} on local:\n#{invalid.join("\n")}"
@@ -70,7 +70,7 @@ module Capistrano
         c = config
         on release_roles(:all), in: :groups, limit: c.max_parallels do |host|
           contents = capture(:ls, '-x', c.archives_path).split
-          archives, invalid = contents.partition { |e| /^\d{14}\.#{Regexp.escape(c.archive_suffix)}$/ =~ e }
+          archives, invalid = contents.partition { |e| /^\d{14}\.#{Regexp.escape(c.archive_file_extension)}$/ =~ e }
 
           if invalid.any?
             warn "Invalid contents in #{c.archives_path} on #{host}:\n#{invalid.join("\n")}"
@@ -84,7 +84,7 @@ module Capistrano
 
             if test("[ -d #{current_path} ]")
               current_release = capture(:readlink, current_path).to_s
-              current_release_archive = c.archives_path.join("#{File.basename(current_release)}.#{c.archive_suffix}")
+              current_release_archive = c.archives_path.join("#{File.basename(current_release)}.#{c.archive_file_extension}")
               if old_archives.include?(current_release_archive)
                 warn "Current release archive was marked for being removed but it's going to be skipped on #{host}"
                 old_archives.delete(current_release_archive)
