@@ -155,6 +155,7 @@ module Capistrano
           ######### DEPRECATION WARNING #########
 
           `Capistrano::NetStorage.config.archive_suffix` is no longer available
+          at #{caller[0]}
 
           Use following method instead.
           `Capistrano::NetStorage.config.archive_file_extension`
