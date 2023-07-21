@@ -7,6 +7,7 @@ namespace :net_storage do
     Capistrano::NetStorage.scm.check
     Capistrano::NetStorage.bundler.check
     Capistrano::NetStorage.cleaner.check
+    Capistrano::NetStorage.config_uploader.check
 
     config = Capistrano::NetStorage.config
     run_locally do
@@ -44,7 +45,7 @@ namespace :net_storage do
     Capistrano::NetStorage.transport.download
     Capistrano::NetStorage.archiver.extract
 
-    Capistrano::NetStorage.scm.sync_config
+    Capistrano::NetStorage.config_uploader.upload_config_files
   end
 
   desc 'Clean up old release directories on local'

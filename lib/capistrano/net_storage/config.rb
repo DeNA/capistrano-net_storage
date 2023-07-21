@@ -3,6 +3,7 @@ require 'pathname'
 require 'capistrano/net_storage/cleaner'
 require 'capistrano/net_storage/bundler/default'
 require 'capistrano/net_storage/bundler/null'
+require 'capistrano/net_storage/config_uploader'
 
 module Capistrano
   module NetStorage
@@ -32,6 +33,10 @@ module Capistrano
         else
           Capistrano::NetStorage::Bundler::Default
         end
+      end
+
+      def config_uploader_class
+        Capistrano::NetStorage::ConfigUploader
       end
 
       # Settings for syncing config

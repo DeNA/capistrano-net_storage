@@ -26,6 +26,10 @@ module Capistrano
       def bundler
         config.bundler_class.new
       end
+
+      def config_uploader
+        config.config_uploader_class.new
+      end
     end
   end
 end
