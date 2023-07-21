@@ -14,24 +14,7 @@ module Capistrano
         config = Capistrano::NetStorage.config
 
         run_locally do
-          contents = capture(:ls, '-x', config.local_releases_path).split
-          # reference
-          # https://github.com/capistrano/capistrano/blob/cc4f31fdfcb4a21c569422a95868d0bb52844c75/lib/capistrano/tasks/deploy.rake#L152
-          releases, invalid = contents.partition { |e| /^\d{14}$/ =~ e }
-
-          if invalid.any?
-            warn "Invalid contents in #{config.local_releases_path} on local:\n#{invalid.join("\n")}"
-          end
-
-          if releases.count > fetch(:keep_releases)
-            info "Keeping #{fetch(:keep_releases)} of #{releases.count} releases on local"
-            old_releases = (releases - releases.last(fetch(:keep_releases))).map do |release|
-              config.local_releases_path.join(release).to_s
-            end
-            execute :rm, '-rf', *old_releases
-          else
-            info "No old releases (keeping newest #{fetch(:keep_releases)}) in #{config.local_releases_path} on local"
-          end
+          clean_targets(config.local_releases_path, /^\d{14}$/)
         end
       end
 
@@ -42,22 +25,7 @@ module Capistrano
         config = Capistrano::NetStorage.config
 
         run_locally do
-          contents = capture(:ls, '-x', config.local_archives_path).split
-          archives, invalid = contents.partition { |e| /^\d{14}\.[^.]+$/ =~ e } # Do not care file extension
-
-          if invalid.any?
-            warn "Invalid contents in #{config.local_archives_path} on local:\n#{invalid.join("\n")}"
-          end
-
-          if archives.count > fetch(:keep_releases)
-            info "Keeping #{fetch(:keep_releases)} of #{archives.count} archives on local"
-            old_archives = (archives - archives.last(fetch(:keep_releases))).map do |archive|
-              config.local_archives_path.join(archive).to_s
-            end
-            execute :rm, '-f', *old_archives
-          else
-            info "No old archives (keeping newest #{fetch(:keep_releases)}) in #{config.local_archives_path} on local"
-          end
+          clean_targets(config.local_archives_path, /^\d{14}\.[^.]+$/) # Do not care file extension
         end
       end
 
@@ -68,24 +36,30 @@ module Capistrano
         config = Capistrano::NetStorage.config
 
         on release_roles(:all), in: :groups, limit: config.max_parallels do |host|
-          contents = capture(:ls, '-x', config.archives_path).split
-          archives, invalid = contents.partition { |e| /^\d{14}\.[^.]+$/ =~ e } # Do not care file extension
+          clean_targets(config.archives_path, /^\d{14}\.[^.]+$/) # Do not care file extension
+        end
+      end
 
-          if invalid.any?
-            warn "Invalid contents in #{config.archives_path} on #{host}:\n#{invalid.join("\n")}"
-          end
+      private
 
-          if archives.count > fetch(:keep_releases)
-            info "Keeping #{fetch(:keep_releases)} of #{archives.count} archives on #{host}"
-            old_archives = (archives - archives.last(fetch(:keep_releases))).map do |archive|
-              config.archives_path.join(archive).to_s
-            end
-            old_archives.each_slice(100) do |old_archives_batch|
-              execute :rm, '-f', *old_archives_batch
-            end
-          else
-            info "No old archives (keeping newest #{fetch(:keep_releases)}) in #{config.archives_path} on #{host}"
+      def clean_targets(target_parent_path, target_regexp)
+        files_or_directories = capture(:ls, '-x', target_parent_path).split
+        targets, invalid = files_or_directories.partition { |e| target_regexp =~ e } # Do not care file extension
+
+        if invalid.any?
+          warn "Invalid targets in #{target_parent_path} for #{target_regexp.inspect} on #{host}:\n#{invalid.join("\n")}"
+        end
+
+        if targets.count > fetch(:keep_releases)
+          info "Keeping #{fetch(:keep_releases)} of #{targets.count} in #{target_parent_path} on #{host}"
+          old_targets = (targets - targets.last(fetch(:keep_releases))).map do |target|
+            target_parent_path.join(target).to_s
           end
+          old_targets.each_slice(100) do |old_targets_batch|
+            execute :rm, '-rf', *old_targets_batch
+          end
+        else
+          info "No old targets (keeping newest #{fetch(:keep_releases)}) in #{target_parent_path} on #{host}"
         end
       end
     end
