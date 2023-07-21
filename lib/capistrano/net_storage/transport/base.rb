@@ -10,9 +10,9 @@ module Capistrano
           raise NotImplementedError
         end
 
-        # Find uploaded archive to be deployed and set +:net_storage_uploaded_archive+ its address
+        # Return whether or not archive is already exist on remote storage
         # @abstract
-        def find_uploaded
+        def archive_exists?
           raise NotImplementedError
         end
 
