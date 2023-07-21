@@ -40,8 +40,6 @@ module Capistrano
         end
       end
 
-      private
-
       def self.clean_targets(target_parent_path, target_regexp)
         files_or_directories = backend.capture(:ls, '-x', target_parent_path).split
         targets, invalid = files_or_directories.partition { |e| target_regexp =~ e }
