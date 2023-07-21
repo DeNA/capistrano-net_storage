@@ -43,7 +43,7 @@ module Capistrano
 
         run_locally do
           contents = capture(:ls, '-x', config.local_archives_path).split
-          archives, invalid = contents.partition { |e| /^\d{14}\.#{Regexp.escape(config.archive_file_extension)}$/ =~ e }
+          archives, invalid = contents.partition { |e| /^\d{14}\.[^.]+$/ =~ e } # Do not care file extension
 
           if invalid.any?
             warn "Invalid contents in #{config.local_archives_path} on local:\n#{invalid.join("\n")}"
@@ -69,7 +69,7 @@ module Capistrano
 
         on release_roles(:all), in: :groups, limit: config.max_parallels do |host|
           contents = capture(:ls, '-x', config.archives_path).split
-          archives, invalid = contents.partition { |e| /^\d{14}\.#{Regexp.escape(config.archive_file_extension)}$/ =~ e }
+          archives, invalid = contents.partition { |e| /^\d{14}\.[^.]+$/ =~ e } # Do not care file extension
 
           if invalid.any?
             warn "Invalid contents in #{config.archives_path} on #{host}:\n#{invalid.join("\n")}"
