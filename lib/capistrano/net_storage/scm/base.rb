@@ -33,13 +33,6 @@ module Capistrano
         def prepare_archive
           raise NotImplementedError
         end
-
-        # Copy local config files to servers
-        def sync_config
-          return if config.config_files.empty?
-
-          upload_files(config.config_files, config.release_app_path.join('config'))
-        end
       end
     end
   end
