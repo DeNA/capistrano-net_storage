@@ -39,10 +39,10 @@ describe Capistrano::NetStorage::Config do
           upload_files_by_rsync?: true,
           rsync_options: {},
 
-          max_parallels: 3,
+          max_parallels: 1000,
           reuse_archive?: true,
 
-          local_base_path: Pathname.new("#{Dir.pwd}/.local_repo"),
+          local_base_path: Pathname.new("#{Dir.pwd}/.local_net_storage"),
           archives_path: Pathname.new('/path/to/deploy/net_storage_archives'),
 
           skip_bundle?: false,
@@ -90,6 +90,7 @@ describe Capistrano::NetStorage::Config do
 
           set :net_storage_transport, MyTest::Transport
 
+          require 'capistrano/net_storage/archiver/zip'
           set :net_storage_archiver, Capistrano::NetStorage::Archiver::Zip
           set :net_storage_scm, MyTest::SCM
 
@@ -97,7 +98,7 @@ describe Capistrano::NetStorage::Config do
           set :net_storage_upload_files_by_rsync, false
           set :net_storage_rsync_options, { user: 'bob' }
 
-          set :net_storage_max_parallels, 100
+          set :net_storage_max_parallels, 777
           set :net_storage_reuse_archive, false
 
           set :net_storage_local_base_path, 'hoge'
@@ -115,7 +116,7 @@ describe Capistrano::NetStorage::Config do
           config_files: ['foo', 'bar'],
           rsync_options: { user: 'bob' },
 
-          max_parallels: 100,
+          max_parallels: 777,
           reuse_archive?: false,
 
           local_base_path: Pathname.new('hoge'),
