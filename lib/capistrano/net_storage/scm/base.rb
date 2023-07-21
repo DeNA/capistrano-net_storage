@@ -1,13 +1,9 @@
-require 'capistrano/net_storage/utils'
-
 module Capistrano
   module NetStorage
     module SCM
       # Base internal SCM class of Capistrano::Netstrage
       # @abstract
       class Base
-        include Capistrano::NetStorage::Utils
-
         # Check SCM prerequisites
         # @abstract
         def check
