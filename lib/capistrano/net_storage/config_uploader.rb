@@ -15,14 +15,9 @@ module Capistrano
       def upload_config_files
         config = Capistrano::NetStorage.config
 
-        # FIXME: This is a very workaround to architectural issue. Do not copy.
-        build_rsh_option = -> (host) {
-          build_ssh_command(host)
-        }
-
         on release_roles(:all), in: :groups, limit: MAX_PARALLEL_TO_UPLOAD do |host|
           if config.upload_files_by_rsync?
-            rsh_option = build_rsh_option.call(host)
+            rsh_option = Capistrano::NetStorage::ConfigUploader.build_ssh_command(host)
             run_locally do
               sleep Random.rand(JITTER_DURATION_TO_UPLOAD)
               execute :rsync, '-az', "--rsh='#{rsh_option}'", *config.config_files, "#{host.hostname}:#{config.release_app_path.join('config')}"
@@ -37,7 +32,7 @@ module Capistrano
       end
 
       # Build ssh command with options for rsync
-      def build_ssh_command(host)
+      def self.build_ssh_command(host)
         user_opt    = ''
         key_opt     = ''
         port_opt    = ''
