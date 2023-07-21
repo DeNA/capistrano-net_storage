@@ -80,22 +80,8 @@ module Capistrano
             old_archives = (archives - archives.last(fetch(:keep_releases))).map do |archive|
               config.archives_path.join(archive).to_s
             end
-
-            if test("[ -d #{current_path} ]")
-              current_release = capture(:readlink, current_path).to_s
-              current_release_archive = config.archives_path.join("#{File.basename(current_release)}.#{config.archive_file_extension}")
-              if old_archives.include?(current_release_archive)
-                warn "Current release archive was marked for being removed but it's going to be skipped on #{host}"
-                old_archives.delete(current_release_archive)
-              end
-            else
-              debug "There is no current release present on #{host}"
-            end
-
-            if old_archives.any?
-              old_archives.each_slice(100) do |old_archives_batch|
-                execute :rm, '-f', *old_archives_batch
-              end
+            old_archives.each_slice(100) do |old_archives_batch|
+              execute :rm, '-f', *old_archives_batch
             end
           else
             info "No old archives (keeping newest #{fetch(:keep_releases)}) in #{config.archives_path} on #{host}"
