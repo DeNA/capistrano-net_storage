@@ -25,7 +25,7 @@ module Capistrano
         # file extension
         # @abstract
         def self.file_extension
-          'archive' # just for backward compatibility
+          raise NotImplementedError
         end
       end
     end

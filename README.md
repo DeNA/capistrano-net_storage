@@ -45,26 +45,23 @@ Or install it yourself as:
 
 Set Capistrano variables by `set name, value`.
 
+You can consult configuration of Capistrano itself at https://capistranorb.com/documentation/getting-started/configuration/
+
+Configurations of Capistrano::NetStorage are as follows:
+
  Name | Default | Description
 ------|---------|------------
- `:scm`  | `nil` | Set `:net_storage` for capistrano before v3.7
- `:branch` | `master` | Target branch of SCM to release
- `:keep_releases` | `5` | Numbers to keep released versions
+ `:net_storage_transport` | NO DEFAULT | Transport class for _remote storage_ e.g. `Capistrano::NetStorage::S3`
  `:net_storage_archiver` | `Capistrano::NetStorage::Archiver::TarGzip` | Archiver class
  `:net_storage_scm` | `Capistrano::NetStorage::SCM::Git` | Internal scm class for application repository
- `:net_storage_transport` | `nil` | Transport class for _remote storage_
- `:net_storage_archive_on_missing` | `true` | If `true`, create and upload archive only when target archive is missing on remote storage
  `:net_storage_config_files` | `[]` | Files to sync `config/` directory on target servers' application directory
- `:net_storage_max_parallels` | number of servers | Max concurrency for remote tasks
+ `:net_storage_upload_files_by_rsync` | `true` | Use rsync(1) to deploy config files
  `:net_storage_rsync_options` | `#{ssh_options}` | SSH options for rsync command to sync configs
- `:net_storage_upload_files_by_rsync` | `false` | Use rsync(1) to deploy config files
- `:net_storage_with_bundle` | `false` | Do `bundle install` when creating archive
- `:net_storage_local_base_path` | `.local_repo` | Base directory on deploy server
- `:net_storage_local_mirror_path` | `#{net_storage_local_base_path}/mirror` | Path to clone repository on deploy server
- `:net_storage_local_releases_path` | `#{net_storage_local_base_path}/releases` | Path to keep release directories on deploy server
- `:net_storage_local_bundle_path` | `#{net_storage_local_base_path}/bundle` | Shared directory to install gems on deploy server
- `:net_storage_local_archives_path` | `#{net_storage_local_base_path}/archives` | Archive directories on deploy server
+ `:net_storage_max_parallels` | 1000 | Max concurrency for remote tasks. (This default is being tuned by maintainers.)
+ `:net_storage_reuse_archive` | `true` | If `true`, it reuses archive with the same commit hash at remote storage and uploads archives only when it does not exist.
+ `:net_storage_local_base_path` | `.local_net_storage` | Base directory on deploy server
  `:net_storage_archives_path` | `#{deploy_to}/net_storage_archives` | Archive directories on application server
+ `:net_storage_skip_bundle` | `false` | Skip `bundle install` when creating archive
  `:net_storage_multi_app_mode` | `false` | Deploy a repository with multiple Rails apps at the top directory
 
 ### Transport Plugins
@@ -78,6 +75,8 @@ If you wish a plugin for other types of _remote storage_, you can develop it. It
 
 ## Usage
 
+Below is the typical usage of Capistrano::NetStorage.
+
 Edit Capfile:
 
 ```ruby
@@ -88,28 +87,35 @@ require 'capistrano/setup'
 require 'capistrano/deploy'
 
 # Includes tasks from other gems included in your Gemfile
-if Gem::Version.new(Capistrano::VERSION) < Gem::Version.new('3.7.0')
-  require 'capistrano/net_storage'
-else
-  require "capistrano/net_storage/plugin"
-  install_plugin Capistrano::NetStorage::Plugin
-end
+require "capistrano/net_storage/plugin"
+install_plugin Capistrano::NetStorage::Plugin
 
 # Load transport plugin for Capistrano::NetStorage
-# require 'capistrano/net_storage/s3'
+require 'capistrano/net_storage/s3' # or your_custom_transport
 ```
 
 Edit your `config/deploy.rb`:
 
 ```ruby
-if Gem::Version.new(Capistrano::VERSION) < Gem::Version.new('3.7.0')
-  set :scm, :net_storage
+set :net_storage_transport, Capistrano::NetStorage::S3::Transport # or YourCustomTransport class
+set :net_storage_config_files, Pathname('path/to/config').glob('*.yml')
+```
+
+When you want to further prepare the release before deployment, you can write it as follows:
+
+```ruby
+namespace :your_namespace do
+  task :prepare_archive do
+    run_locally do
+      within Capistrano::NetStorage.config.local_release_app_path do
+        # The resultant artifacts are to be archived with other files
+        execute :bundle, 'exec', 'rake', 'build_in_memory_cache_bundle'
+      end
+    end
+  end
 end
-set :net_storage_transport, Your::TransportPluginModule
-# set :net_storage_transport, Capistrano::NetStorage::S3::Transport # w/ capistrano-net_storage-s3
-# set :net_storage_config_files, [your_config_files]
-# set :net_storage_with_bundle, true
-# set :net_storage_archiver, Capistrano::NetStorage::Archiver::TarGzip
+
+after 'net_storage:prepare_archive', 'your_namespace:prepare_archive'
 ```
 
 ## Example

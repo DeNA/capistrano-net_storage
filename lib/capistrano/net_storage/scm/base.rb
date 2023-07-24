@@ -1,13 +1,9 @@
-require 'capistrano/net_storage/utils'
-
 module Capistrano
   module NetStorage
     module SCM
       # Base internal SCM class of Capistrano::Netstrage
       # @abstract
       class Base
-        include Capistrano::NetStorage::Utils
-
         # Check SCM prerequisites
         # @abstract
         def check
@@ -36,13 +32,6 @@ module Capistrano
         # @abstract
         def prepare_archive
           raise NotImplementedError
-        end
-
-        # Copy local config files to servers
-        def sync_config
-          return if config.config_files.empty?
-
-          upload_files(config.config_files, config.release_app_path.join('config'))
         end
       end
     end
