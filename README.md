@@ -78,6 +78,7 @@ Configurations of Capistrano::NetStorage are as follows:
  `:net_storage_reuse_archive` | `true` | If `true`, it reuses archive with the same commit hash at remote storage and uploads archives only when it does not exist.
  `:net_storage_local_base_path` | `.local_net_storage` | Base directory on deploy server
  `:net_storage_archives_path` | `#{deploy_to}/net_storage_archives` | Archive directories on application server
+ `:net_storage_keep_remote_archives` | 10 | Number of archive files keep on remote storage
 
 ### Transport Plugins
 

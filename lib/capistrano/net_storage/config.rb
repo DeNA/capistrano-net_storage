@@ -63,6 +63,10 @@ module Capistrano
         fetch(:net_storage_reuse_archive)
       end
 
+      def keep_remote_archives
+        fetch(:net_storage_keep_remote_archives)
+      end
+
       # Settings for behavioral changes
 
       def skip_bundle?
