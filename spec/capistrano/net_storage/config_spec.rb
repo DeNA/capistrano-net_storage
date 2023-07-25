@@ -41,6 +41,7 @@ describe Capistrano::NetStorage::Config do
 
           max_parallels: 1000,
           reuse_archive?: true,
+          keep_remote_archives: 10,
 
           local_base_path: Pathname.new("#{Dir.pwd}/.local_net_storage"),
           archives_path: Pathname.new('/path/to/deploy/net_storage_archives'),
@@ -100,6 +101,7 @@ describe Capistrano::NetStorage::Config do
 
           set :net_storage_max_parallels, 777
           set :net_storage_reuse_archive, false
+          set :net_storage_keep_remote_archives, 1000
 
           set :net_storage_local_base_path, 'hoge'
 
@@ -118,6 +120,7 @@ describe Capistrano::NetStorage::Config do
 
           max_parallels: 777,
           reuse_archive?: false,
+          keep_remote_archives: 1000,
 
           local_base_path: Pathname.new('hoge'),
 
