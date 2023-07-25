@@ -111,6 +111,7 @@ namespace :your_namespace do
       within Capistrano::NetStorage.config.local_release_app_path do
         # The resultant artifacts are to be archived with other files
         execute :bundle, 'exec', 'rake', 'build_in_memory_cache_bundle'
+        execute :bundle, 'exec', 'rake', 'assets:precompile'
       end
     end
   end
