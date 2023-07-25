@@ -50,20 +50,34 @@ You can consult configuration of Capistrano itself at https://capistranorb.com/d
 
 Configurations of Capistrano::NetStorage are as follows:
 
+#### General Settings
+
  Name | Default | Description
 ------|---------|------------
  `:net_storage_transport` | NO DEFAULT | Transport class for _remote storage_ e.g. `Capistrano::NetStorage::S3`
+ `:net_storage_config_files` | `[]` | Files to sync `config/` directory on target servers' application directory
+
+#### Settings for Behavioral Changes
+
+ Name | Default | Description
+------|---------|------------
+ `:net_storage_skip_bundle` | `false` | Skip `bundle install` when creating archive (might be work for non-Ruby app)
+ `:net_storage_multi_app_mode` | `false` | Deploy a repository with multiple Rails apps at the top directory
+
+#### Other Settings
+
+**NOTE: We strongly recommend the defaults for integrity and performance. Change at your own risk.**
+
+ Name | Default | Description
+------|---------|------------
  `:net_storage_archiver` | `Capistrano::NetStorage::Archiver::TarGzip` | Archiver class
  `:net_storage_scm` | `Capistrano::NetStorage::SCM::Git` | Internal scm class for application repository
- `:net_storage_config_files` | `[]` | Files to sync `config/` directory on target servers' application directory
  `:net_storage_upload_files_by_rsync` | `true` | Use rsync(1) to deploy config files
  `:net_storage_rsync_options` | `#{ssh_options}` | SSH options for rsync command to sync configs
  `:net_storage_max_parallels` | 1000 | Max concurrency for remote tasks. (This default is being tuned by maintainers.)
  `:net_storage_reuse_archive` | `true` | If `true`, it reuses archive with the same commit hash at remote storage and uploads archives only when it does not exist.
  `:net_storage_local_base_path` | `.local_net_storage` | Base directory on deploy server
  `:net_storage_archives_path` | `#{deploy_to}/net_storage_archives` | Archive directories on application server
- `:net_storage_skip_bundle` | `false` | Skip `bundle install` when creating archive
- `:net_storage_multi_app_mode` | `false` | Deploy a repository with multiple Rails apps at the top directory
 
 ### Transport Plugins
 
