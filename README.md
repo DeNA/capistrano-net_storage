@@ -135,11 +135,6 @@ end
 after 'net_storage:prepare_archive', 'your_namespace:prepare_archive'
 ```
 
-## Example
-
-You can see typical usage of this library by
-[capistrano-net_storage_demo](https://github.com/DeNADev/capistrano-net_storage_demo).
-
 ## License
 
 Available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
