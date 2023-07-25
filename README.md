@@ -14,7 +14,7 @@ Logically, this tool enables _O(1)_ deployment.
 
 The image below illustrates the concept of **Capistrano::NetStorage**.
 
-![concept](https://github.com/DeNADev/capistrano-net_storage/raw/resource/images/concept.png)
+![concept](docs/images/concept.png)
 
 This library goes following procedures as _capistrano tasks_:
 
