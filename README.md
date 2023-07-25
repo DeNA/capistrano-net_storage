@@ -16,11 +16,12 @@ The image below illustrates the concept of **Capistrano::NetStorage**.
 
 ![concept](docs/images/concept.png)
 
-This library goes following procedures as _capistrano tasks_:
+This library conducts the following procedures as _capistrano tasks_:
 
 1. Prepare an archive of application to upload.
-  * Clone or update source code repository on deploy server.
-  * Do `bundle install` by an option.
+  * Clone and update source code repository on deploy server.
+  * Extract the internals to local release directory.
+  * Further prepare the local release. (e.g. `bundle install` and `assets:precompile`)
 2. Upload the archive to _remote storage_.
 3. Download the archive from _remote storage_ on application servers.
   * This task is executed in parallel way.
