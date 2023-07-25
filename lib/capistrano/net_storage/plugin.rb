@@ -26,6 +26,8 @@ module Capistrano
 
         set_if_empty :net_storage_skip_bundle, false
         set_if_empty :net_storage_multi_app_mode, false
+
+        set_if_empty :net_storage_keep_remote_archives, 10
       end
 
       def define_tasks
