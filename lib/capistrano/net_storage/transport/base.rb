@@ -1,38 +1,30 @@
 module Capistrano
   module NetStorage
     module Transport
-      # Abstract class to transport archive from/to remote storage
-      # @abstract
+      # Abstract class to upload archive from local to storage and download from storage to remote
       class Base
-        # Check prerequisites for transport
-        # @abstract
         def check
-          raise NotImplementedError
+          raise NotImplementedError, "Implement `#{self.class}#{__method__}` to check prerequisites for Transport"
         end
 
         # Return whether or not archive is already exist on remote storage
         # @abstract
         def archive_exists?
-          raise NotImplementedError
+          raise NotImplementedError, "Implement `#{self.class}#{__method__}` to test archive on storage corresponding to `fetch(:current_revision) + Config#archive_file_extension`"
         end
 
         # Upload archive onto remote storage
         # @abstract
         def upload
-          raise NotImplementedError
+          raise NotImplementedError, "Implement `#{self.class}#{__method__}` to upload archive from `Capistrano::NetStorage.config.local_archive_path` to remote storage"
         end
 
-        # Download archive from remote storage to servers.
-        # Archive file should be placed at +config.archive_path+
-        # @abstract
         def download
-          raise NotImplementedError
+          raise NotImplementedError, "Implement `#{self.class}#{__method__}` to download archive from remote storage to `Capistrano::NetStorage.config.archive_path`"
         end
 
-        # Clean up old archives on remote storage
-        # @abstract
         def cleanup
-          raise NotImplementedError
+          raise NotImplementedError, "Implement `#{self.class}#{__method__}` to clean archives on remote storage to `Capistrano::NetStorage.config.keep_remote_archives`"
         end
       end
     end
