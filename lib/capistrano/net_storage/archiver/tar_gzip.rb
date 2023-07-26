@@ -22,7 +22,6 @@ class Capistrano::NetStorage::Archiver::TarGzip < Capistrano::NetStorage::Archiv
     config = Capistrano::NetStorage.config
 
     on release_roles(:all), in: :groups, limit: config.max_parallels do
-      execute :mkdir, '-p', config.archives_path
       execute :mkdir, '-p', release_path
       within release_path do
         execute :tar, 'xzf', config.archive_path
