@@ -1,7 +1,7 @@
 module Capistrano
   module NetStorage
     module SCM
-      # Base internal SCM class of Capistrano::Netstrage
+      # Abstract class to handle SCM between local_mirror_path and local_release_path
       class Base
         def check
           raise NotImplementedError, "Implement `#{self.class}#{__method__}` to check prerequisites for SCM"

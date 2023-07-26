@@ -1,6 +1,5 @@
 require 'capistrano/net_storage/scm/base'
 
-# Internal SCM class for Git repository
 class Capistrano::NetStorage::SCM::Git < Capistrano::NetStorage::SCM::Base
   def check
     run_locally do
