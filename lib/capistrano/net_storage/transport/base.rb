@@ -7,14 +7,10 @@ module Capistrano
           raise NotImplementedError, "Implement `#{self.class}#{__method__}` to check prerequisites for Transport"
         end
 
-        # Return whether or not archive is already exist on remote storage
-        # @abstract
         def archive_exists?
           raise NotImplementedError, "Implement `#{self.class}#{__method__}` to test archive on storage corresponding to `fetch(:current_revision) + Config#archive_file_extension`"
         end
 
-        # Upload archive onto remote storage
-        # @abstract
         def upload
           raise NotImplementedError, "Implement `#{self.class}#{__method__}` to upload archive from `Capistrano::NetStorage.config.local_archive_path` to remote storage"
         end
